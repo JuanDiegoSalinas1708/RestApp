@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=../vendor/symfony/routing/Loader/schema/routing.schema.json
+
+# This file is the entry point to configure the routes of your app.
+# Routes can be defined explicitly or using PHP attributes.
+# See also https://symfony.com/doc/current/routing.html
+
+# To list all registered routes, run the following command:
+#   bin/console debug:router
+
+api_login:
+    path: /api/login
+    controller: App\Controller\ApiController::login
+    methods: [POST]
+
+api_registro:
+    path: /api/registro
+    controller: App\Controller\ApiController::registro
+    methods: [POST]
+
+api_productos:
+    path: /api/productos
+    controller: App\Controller\ApiController::productos
+    methods: [GET]
+
+controllers:
+    resource: '../src/Controller/'
+    type: attribute
