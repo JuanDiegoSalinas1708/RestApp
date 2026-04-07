@@ -17,10 +17,25 @@ api_registro:
     controller: App\Controller\ApiController::registro
     methods: [POST]
 
-api_productos:
+api_productos_get:
     path: /api/productos
     controller: App\Controller\ApiController::productos
     methods: [GET]
+
+api_productos_post:
+    path: /api/productos
+    controller: App\Controller\ApiController::crearProducto
+    methods: [POST]
+
+api_productos_put:
+    path: /api/productos/{id}
+    controller: App\Controller\ApiController::editarProducto
+    methods: [PUT]
+
+api_productos_delete:
+    path: /api/productos/{id}
+    controller: App\Controller\ApiController::eliminarProducto
+    methods: [DELETE]
 
 controllers:
     resource: '../src/Controller/'
