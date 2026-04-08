@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes xmlns="http://symfony.com/schema/routing"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/routing
+        https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <!-- Usuarios Routes -->
+    <route id="api_usuarios_get" path="/api/usuarios" methods="GET">
+        <default key="_controller">App\Controller\ApiAdditionalController::usuarios</default>
+    </route>
+
+    <route id="api_usuarios_put" path="/api/usuarios/{id}" methods="PUT">
+        <default key="_controller">App\Controller\ApiAdditionalController::editarUsuario</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <route id="api_usuarios_delete" path="/api/usuarios/{id}" methods="DELETE">
+        <default key="_controller">App\Controller\ApiAdditionalController::eliminarUsuario</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <!-- Inventario Routes -->
+    <route id="api_inventario_get" path="/api/inventario" methods="GET">
+        <default key="_controller">App\Controller\ApiAdditionalController::inventario</default>
+    </route>
+
+    <route id="api_inventario_post" path="/api/inventario" methods="POST">
+        <default key="_controller">App\Controller\ApiAdditionalController::crearInventario</default>
+    </route>
+
+    <route id="api_inventario_put" path="/api/inventario/{id}" methods="PUT">
+        <default key="_controller">App\Controller\ApiAdditionalController::editarInventario</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <route id="api_inventario_delete" path="/api/inventario/{id}" methods="DELETE">
+        <default key="_controller">App\Controller\ApiAdditionalController::eliminarInventario</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <!-- Ordenes Routes -->
+    <route id="api_ordenes_get" path="/api/ordenes" methods="GET">
+        <default key="_controller">App\Controller\ApiAdditionalController::ordenes</default>
+    </route>
+
+    <route id="api_ordenes_post" path="/api/ordenes" methods="POST">
+        <default key="_controller">App\Controller\ApiAdditionalController::crearOrden</default>
+    </route>
+
+    <route id="api_ordenes_put" path="/api/ordenes/{id}" methods="PUT">
+        <default key="_controller">App\Controller\ApiAdditionalController::editarOrden</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <route id="api_ordenes_delete" path="/api/ordenes/{id}" methods="DELETE">
+        <default key="_controller">App\Controller\ApiAdditionalController::eliminarOrden</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <!-- Detalle Orden Routes -->
+    <route id="api_detalle_orden_get" path="/api/detalle-orden" methods="GET">
+        <default key="_controller">App\Controller\ApiAdditionalController::detalleOrden</default>
+    </route>
+
+    <route id="api_detalle_orden_post" path="/api/detalle-orden" methods="POST">
+        <default key="_controller">App\Controller\ApiAdditionalController::crearDetalleOrden</default>
+    </route>
+
+    <route id="api_detalle_orden_put" path="/api/detalle-orden/{id}" methods="PUT">
+        <default key="_controller">App\Controller\ApiAdditionalController::editarDetalleOrden</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <route id="api_detalle_orden_delete" path="/api/detalle-orden/{id}" methods="DELETE">
+        <default key="_controller">App\Controller\ApiAdditionalController::eliminarDetalleOrden</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+</routes>
