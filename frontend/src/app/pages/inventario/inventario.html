@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="navbar">
+    <h1>App Rest</h1>
+    <nav>
+      <a routerLink="/productos">Productos</a>
+      <a routerLink="/usuarios">Usuarios</a>
+      <a routerLink="/inventario">Inventario</a>
+      <a routerLink="/ordenes">Órdenes</a>
+      <a routerLink="/detalle-orden">Detalle Orden</a>
+    </nav>
+    <div class="usuario-info">
+      <span>Bienvenido, {{ usuario?.nombre }} {{ usuario?.apellido }}</span>
+      <button (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <h2>Inventario</h2>
+
+<div class="create-form">
+  <h3>Crear Inventario</h3>
+  <form (ngSubmit)="crearInventario()">
+    <label>Producto:
+      <select [(ngModel)]="nuevoInventario.id_producto" name="id_producto" required>
+        <option value="">Seleccionar producto</option>
+        <option *ngFor="let p of productos" [value]="p.id">{{ p.nombre }}</option>
+      </select>
+    </label><br>
+    <label>Stock: <input [(ngModel)]="nuevoInventario.stock" name="stock" type="number" required></label><br>
+    <button type="submit">Crear</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Producto</th>
+      <th>Stock</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let inv of inventarios">
+      <td>{{ inv.id }}</td>
+      <td>{{ inv.id_producto }}</td>
+      <td>{{ inv.stock }}</td>
+      <td>
+        <button (click)="editarInventario(inv)">Editar</button>
+        <button (click)="eliminarInventario(inv.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="editandoInventario" class="edit-form">
+  <h3>Editar Inventario</h3>
+  <form (ngSubmit)="guardarEdicion()">
+    <label>Producto:
+      <select [(ngModel)]="editandoInventario.id_producto" name="id_producto" required>
+        <option value="">Seleccionar producto</option>
+        <option *ngFor="let p of productos" [value]="p.id">{{ p.nombre }}</option>
+      </select>
+    </label><br>
+    <label>Stock: <input [(ngModel)]="editandoInventario.stock" name="stock" type="number" required></label><br>
+    <button type="submit">Guardar</button>
+    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+  </form>
+</div>
+</div>

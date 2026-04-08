@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="navbar">
+    <h1>App Rest</h1>
+    <nav>
+      <a routerLink="/productos">Productos</a>
+      <a routerLink="/usuarios">Usuarios</a>
+      <a routerLink="/inventario">Inventario</a>
+      <a routerLink="/ordenes">Órdenes</a>
+      <a routerLink="/detalle-orden">Detalle Orden</a>
+    </nav>
+    <div class="usuario-info">
+      <span>Bienvenido, {{ usuario?.nombre }} {{ usuario?.apellido }}</span>
+      <button (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <h2>Usuarios</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Correo</th>
+      <th>Edad</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let u of usuarios">
+      <td>{{ u.id }}</td>
+      <td>{{ u.nombre }}</td>
+      <td>{{ u.apellido }}</td>
+      <td>{{ u.correo }}</td>
+      <td>{{ u.edad }}</td>
+      <td>{{ u.estado ? 'Activo' : 'Inactivo' }}</td>
+      <td>
+        <button (click)="editarUsuario(u)">Editar</button>
+        <button (click)="eliminarUsuario(u.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="editandoUsuario" class="edit-form">
+  <h3>Editar Usuario</h3>
+  <form (ngSubmit)="guardarEdicion()">
+    <label>Nombre: <input [(ngModel)]="editandoUsuario.nombre" name="nombre" required></label><br>
+    <label>Apellido: <input [(ngModel)]="editandoUsuario.apellido" name="apellido" required></label><br>
+    <label>Correo: <input [(ngModel)]="editandoUsuario.correo" name="correo" type="email" required></label><br>
+    <label>Edad: <input [(ngModel)]="editandoUsuario.edad" name="edad" type="number" required></label><br>
+    <label>Estado: <input [(ngModel)]="editandoUsuario.estado" name="estado" type="checkbox"></label><br>
+    <button type="submit">Guardar</button>
+    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+  </form>
+</div></div>

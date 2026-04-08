@@ -20,7 +20,7 @@ class Usuarios
     #[ORM\Column(name: 'Apellido', length: 50)]
     private ?string $apellido = null;
 
-    #[ORM\Column(name: 'Password', length: 50)]
+    #[ORM\Column(name: 'Password', length: 255)]
     private ?string $password = null;
 
     #[ORM\Column(name: 'Edad')]

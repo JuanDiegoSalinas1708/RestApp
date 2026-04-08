@@ -1,6 +1,13 @@
 <div class="productos-container">
   <div class="navbar">
     <h1>App Rest</h1>
+    <nav>
+      <a routerLink="/productos">Productos</a>
+      <a routerLink="/usuarios">Usuarios</a>
+      <a routerLink="/inventario">Inventario</a>
+      <a routerLink="/ordenes">Órdenes</a>
+      <a routerLink="/detalle-orden">Detalle Orden</a>
+    </nav>
     <div class="usuario-info">
       <span>Bienvenido, {{ usuario?.nombre }} {{ usuario?.apellido }}</span>
       <button (click)="cerrarSesion()">Cerrar Sesión</button>

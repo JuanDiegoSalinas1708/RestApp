@@ -1,0 +1,74 @@
+<div class="container">
+  <div class="navbar">
+    <h1>App Rest</h1>
+    <nav>
+      <a routerLink="/productos">Productos</a>
+      <a routerLink="/usuarios">Usuarios</a>
+      <a routerLink="/inventario">Inventario</a>
+      <a routerLink="/ordenes">Órdenes</a>
+      <a routerLink="/detalle-orden">Detalle Orden</a>
+    </nav>
+    <div class="usuario-info">
+      <span>Bienvenido, {{ usuario?.nombre }} {{ usuario?.apellido }}</span>
+      <button (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <h2>Órdenes</h2>
+
+<div class="create-form">
+  <h3>Crear Orden</h3>
+  <form (ngSubmit)="crearOrden()">
+    <label>Estado: <input [(ngModel)]="nuevaOrden.estado" name="estado" required></label><br>
+    <label>Fecha: <input [(ngModel)]="nuevaOrden.fecha" name="fecha" type="date" required></label><br>
+    <label>Usuario:
+      <select [(ngModel)]="nuevaOrden.id_usuario" name="id_usuario" required>
+        <option value="">Seleccionar usuario</option>
+        <option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }} {{ u.apellido }}</option>
+      </select>
+    </label><br>
+    <button type="submit">Crear</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Estado</th>
+      <th>Fecha</th>
+      <th>Usuario</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let ord of ordenes">
+      <td>{{ ord.id }}</td>
+      <td>{{ ord.estado }}</td>
+      <td>{{ ord.fecha }}</td>
+      <td>{{ ord.id_usuario }}</td>
+      <td>
+        <button (click)="editarOrden(ord)">Editar</button>
+        <button (click)="eliminarOrden(ord.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="editandoOrden" class="edit-form">
+  <h3>Editar Orden</h3>
+  <form (ngSubmit)="guardarEdicion()">
+    <label>Estado: <input [(ngModel)]="editandoOrden.estado" name="estado" required></label><br>
+    <label>Fecha: <input [(ngModel)]="editandoOrden.fecha" name="fecha" type="date" required></label><br>
+    <label>Usuario:
+      <select [(ngModel)]="editandoOrden.id_usuario" name="id_usuario" required>
+        <option value="">Seleccionar usuario</option>
+        <option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }} {{ u.apellido }}</option>
+      </select>
+    </label><br>
+    <button type="submit">Guardar</button>
+    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+  </form>
+</div>
+</div>
