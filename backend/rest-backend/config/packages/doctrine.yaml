@@ -1,11 +1,11 @@
 doctrine:
     dbal:
         driver: pdo_sqlsrv
-        host: "(localdb)\\MSSQLLocalDB"
+        host: "np:\\\\.\\pipe\\LOCALDB#D8C93D18\\tsql\\query"
         dbname: RestDB
         user: ""
         password: ""
-        trust_server_certificate: true
+        #url: '%env(resolve:DATABASE_URL)%'
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         validate_xml_mapping: true
