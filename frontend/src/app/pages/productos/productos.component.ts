@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './productos.component.html',
   styleUrls: ['./productos.component.css']
 })
@@ -32,7 +32,7 @@ export class ProductosComponent implements OnInit {
 
   cargarProductos() {
     this.productosService.getProductos().subscribe({
-      next: (res) => {
+      next: (res:any) => {
         if (res.status === 'ok') {
           this.productos = res.data;
         }
@@ -49,7 +49,7 @@ export class ProductosComponent implements OnInit {
       return;
     }
     this.productosService.crearProducto(this.nuevoProducto).subscribe({
-      next: (res) => {
+      next: (res:any) => {
         if (res.status === 'ok') {
           this.cargarProductos();
           this.nuevoProducto = { nombre: '', precio: '', descripcion: '' };
@@ -57,7 +57,7 @@ export class ProductosComponent implements OnInit {
           alert(res.message);
         }
       },
-      error: (err) => {
+      error: () => {
         alert('Error al crear producto.');
       }
     });
@@ -81,7 +81,7 @@ export class ProductosComponent implements OnInit {
           alert(res.message);
         }
       },
-      error: (err) => {
+      error: () => {
         alert('Error al editar producto.');
       }
     });
@@ -101,15 +101,10 @@ export class ProductosComponent implements OnInit {
             alert(res.message);
           }
         },
-        error: (err) => {
+        error: () => {
           alert('Error al eliminar producto.');
         }
       });
     }
-  }
-
-  cerrarSesion() {
-    localStorage.removeItem('usuario');
-    this.router.navigate(['/login']);
   }
 }

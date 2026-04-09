@@ -6,16 +6,24 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UsuariosService {
-  private apiUrl = '/api';
+  private apiUrl = 'https://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
   getUsuarios(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/usuarios`);
+    return this.http.get(`${this.apiUrl}/usuarios/todos`);
   }
 
-  editarUsuario(id: number, usuario: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/usuarios/${id}`, usuario);
+  getUsuario(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/usuarios/${id}`);
+  }
+
+  crearUsuario(data: any): Observable<any> {  // ✅ Método agregado
+    return this.http.post(`${this.apiUrl}/usuarios`, data);
+  }
+
+  editarUsuario(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/usuarios/${id}`, data);
   }
 
   eliminarUsuario(id: number): Observable<any> {

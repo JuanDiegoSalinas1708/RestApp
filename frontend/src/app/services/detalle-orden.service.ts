@@ -6,23 +6,23 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DetalleOrdenService {
-  private apiUrl = '/api';
+  private apiUrl = 'https://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
-  getDetalleOrden(): Observable<any> {
+  getDetalles(): Observable<any> {
     return this.http.get(`${this.apiUrl}/detalle-orden`);
   }
 
-  crearDetalleOrden(detalle: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/detalle-orden`, detalle);
+  crearDetalle(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/detalle-orden`, data);
   }
 
-  editarDetalleOrden(id: number, detalle: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/detalle-orden/${id}`, detalle);
+  editarDetalle(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/detalle-orden/${id}`, data);
   }
 
-  eliminarDetalleOrden(id: number): Observable<any> {
+  eliminarDetalle(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/detalle-orden/${id}`);
   }
 }

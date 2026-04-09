@@ -1,19 +1,4 @@
 <div class="productos-container">
-  <div class="navbar">
-    <h1>App Rest</h1>
-    <nav>
-      <a routerLink="/productos">Productos</a>
-      <a routerLink="/usuarios">Usuarios</a>
-      <a routerLink="/inventario">Inventario</a>
-      <a routerLink="/ordenes">Órdenes</a>
-      <a routerLink="/detalle-orden">Detalle Orden</a>
-    </nav>
-    <div class="usuario-info">
-      <span>Bienvenido, {{ usuario?.nombre }} {{ usuario?.apellido }}</span>
-      <button (click)="cerrarSesion()">Cerrar Sesión</button>
-    </div>
-  </div>
-
   <div class="contenido">
     <h2>Productos Disponibles</h2>
 
@@ -21,47 +6,64 @@
     <div class="form-container">
       <h3>Agregar Nuevo Producto</h3>
       <form (ngSubmit)="crearProducto()">
-        <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" placeholder="Nombre" required>
-        <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" placeholder="Precio" step="0.01" required>
-        <input type="text" [(ngModel)]="nuevoProducto.descripcion" name="descripcion" placeholder="Descripción" required>
-        <button type="submit">Agregar Producto</button>
+        <div class="campo">
+          <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" placeholder="Nombre" required>
+        </div>
+        <div class="campo">
+          <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" placeholder="Precio" step="0.01" required>
+        </div>
+        <div class="campo">
+          <input type="text" [(ngModel)]="nuevoProducto.descripcion" name="descripcion" placeholder="Descripción" required>
+        </div>
+        <button type="submit" class="btn-agregar">Agregar Producto</button>
       </form>
     </div>
 
     <!-- Formulario para editar producto -->
-    <div *ngIf="editandoProducto" class="form-container">
+    <div *ngIf="editandoProducto" class="form-container form-editar">
       <h3>Editar Producto</h3>
       <form (ngSubmit)="guardarEdicion()">
-        <input type="text" [(ngModel)]="editandoProducto.nombre" name="nombre" placeholder="Nombre" required>
-        <input type="number" [(ngModel)]="editandoProducto.precio" name="precio" placeholder="Precio" step="0.01" required>
-        <input type="text" [(ngModel)]="editandoProducto.descripcion" name="descripcion" placeholder="Descripción" required>
-        <button type="submit">Guardar Cambios</button>
-        <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+        <div class="campo">
+          <input type="text" [(ngModel)]="editandoProducto.nombre" name="nombre" placeholder="Nombre" required>
+        </div>
+        <div class="campo">
+          <input type="number" [(ngModel)]="editandoProducto.precio" name="precio" placeholder="Precio" step="0.01" required>
+        </div>
+        <div class="campo">
+          <input type="text" [(ngModel)]="editandoProducto.descripcion" name="descripcion" placeholder="Descripción" required>
+        </div>
+        <div class="botones-accion">
+          <button type="submit" class="btn-guardar">Guardar Cambios</button>
+          <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+        </div>
       </form>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Precio</th>
-          <th>Descripción</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of productos">
-          <td>{{ p.id }}</td>
-          <td>{{ p.nombre }}</td>
-          <td>${{ p.precio }}</td>
-          <td>{{ p.descripcion }}</td>
-          <td>
-            <button (click)="editarProducto(p)">Editar</button>
-            <button (click)="eliminarProducto(p.id)">Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Tabla de productos -->
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productos">
+            <td>{{ p.id }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>${{ p.precio }}</td>
+            <td>{{ p.descripcion }}</td>
+            <td class="acciones">
+              <button class="btn-editar" (click)="editarProducto(p)">✏️ Editar</button>
+              <button class="btn-eliminar" (click)="eliminarProducto(p.id)">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

@@ -1,11 +1,6 @@
 # yaml-language-server: $schema=../vendor/symfony/routing/Loader/schema/routing.schema.json
 
-# This file is the entry point to configure the routes of your app.
-# Routes can be defined explicitly or using PHP attributes.
-# See also https://symfony.com/doc/current/routing.html
-
-# To list all registered routes, run the following command:
-#   bin/console debug:router
+# ============ AUTENTICACIÓN ============
 
 api_login:
     path: /api/login
@@ -16,6 +11,8 @@ api_registro:
     path: /api/registro
     controller: App\Controller\ApiController::registro
     methods: [POST]
+
+# ============ PRODUCTOS ============
 
 api_productos_get:
     path: /api/productos
@@ -35,81 +32,6 @@ api_productos_put:
 api_productos_delete:
     path: /api/productos/{id}
     controller: App\Controller\ApiController::eliminarProducto
-    methods: [DELETE]
-
-api_usuarios_get:
-    path: /api/usuarios
-    controller: App\Controller\ApiAdditionalController::usuarios
-    methods: [GET]
-
-api_usuarios_put:
-    path: /api/usuarios/{id}
-    controller: App\Controller\ApiAdditionalController::editarUsuario
-    methods: [PUT]
-
-api_usuarios_delete:
-    path: /api/usuarios/{id}
-    controller: App\Controller\ApiAdditionalController::eliminarUsuario
-    methods: [DELETE]
-
-api_inventario_get:
-    path: /api/inventario
-    controller: App\Controller\ApiAdditionalController::inventario
-    methods: [GET]
-
-api_inventario_post:
-    path: /api/inventario
-    controller: App\Controller\ApiAdditionalController::crearInventario
-    methods: [POST]
-
-api_inventario_put:
-    path: /api/inventario/{id}
-    controller: App\Controller\ApiAdditionalController::editarInventario
-    methods: [PUT]
-
-api_inventario_delete:
-    path: /api/inventario/{id}
-    controller: App\Controller\ApiAdditionalController::eliminarInventario
-    methods: [DELETE]
-
-api_ordenes_get:
-    path: /api/ordenes
-    controller: App\Controller\ApiAdditionalController::ordenes
-    methods: [GET]
-
-api_ordenes_post:
-    path: /api/ordenes
-    controller: App\Controller\ApiAdditionalController::crearOrden
-    methods: [POST]
-
-api_ordenes_put:
-    path: /api/ordenes/{id}
-    controller: App\Controller\ApiAdditionalController::editarOrden
-    methods: [PUT]
-
-api_ordenes_delete:
-    path: /api/ordenes/{id}
-    controller: App\Controller\ApiAdditionalController::eliminarOrden
-    methods: [DELETE]
-
-api_detalle_orden_get:
-    path: /api/detalle-orden
-    controller: App\Controller\ApiAdditionalController::detalleOrden
-    methods: [GET]
-
-api_detalle_orden_post:
-    path: /api/detalle-orden
-    controller: App\Controller\ApiAdditionalController::crearDetalleOrden
-    methods: [POST]
-
-api_detalle_orden_put:
-    path: /api/detalle-orden/{id}
-    controller: App\Controller\ApiAdditionalController::editarDetalleOrden
-    methods: [PUT]
-
-api_detalle_orden_delete:
-    path: /api/detalle-orden/{id}
-    controller: App\Controller\ApiAdditionalController::eliminarDetalleOrden
     methods: [DELETE]
 
 controllers:

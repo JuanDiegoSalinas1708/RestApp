@@ -1,0 +1,97 @@
+<div class="usuarios-container">
+  <div class="contenido">
+    <h2>👥 Gestión de Usuarios</h2>
+
+    <!-- Formulario para crear usuario -->
+    <div class="form-container">
+      <h3>➕ Agregar Nuevo Usuario</h3>
+      <form (ngSubmit)="crearUsuario()">
+        <div class="form-row">
+          <div class="campo">
+            <input type="text" [(ngModel)]="nuevoUsuario.Nombre" name="Nombre" placeholder="Nombre" required>
+          </div>
+          <div class="campo">
+            <input type="text" [(ngModel)]="nuevoUsuario.Apellido" name="Apellido" placeholder="Apellido" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="campo">
+            <input type="email" [(ngModel)]="nuevoUsuario.Correo" name="Correo" placeholder="Correo electrónico" required>
+          </div>
+          <div class="campo">
+            <input type="number" [(ngModel)]="nuevoUsuario.Edad" name="Edad" placeholder="Edad" min="0" required>
+          </div>
+        </div>
+        <div class="campo">
+          <input type="password" [(ngModel)]="nuevoUsuario.Password" name="Password" placeholder="Contraseña" required>
+        </div>
+        <button type="submit" class="btn-agregar">Agregar Usuario</button>
+      </form>
+    </div>
+
+    <!-- Formulario para editar usuario -->
+    <div *ngIf="editandoUsuario" class="form-container form-editar">
+      <h3>✏️ Editar Usuario</h3>
+      <form (ngSubmit)="guardarEdicion()">
+        <div class="form-row">
+          <div class="campo">
+            <input type="text" [(ngModel)]="editandoUsuario.Nombre" name="Nombre" placeholder="Nombre" required>
+          </div>
+          <div class="campo">
+            <input type="text" [(ngModel)]="editandoUsuario.Apellido" name="Apellido" placeholder="Apellido" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="campo">
+            <input type="email" [(ngModel)]="editandoUsuario.Correo" name="Correo" placeholder="Correo electrónico" required>
+          </div>
+          <div class="campo">
+            <input type="number" [(ngModel)]="editandoUsuario.Edad" name="Edad" placeholder="Edad" min="0" required>
+          </div>
+        </div>
+        <div class="campo">
+          <input type="password" [(ngModel)]="editandoUsuario.Password" name="Password" placeholder="Nueva contraseña (dejar vacío para no cambiar)">
+        </div>
+        <div class="botones-accion">
+          <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+          <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">❌ Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Edad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuarios">
+            <td>{{ usuario.Id_Usuario }}</td>
+            <td><strong>{{ usuario.Nombre }}</strong></td>
+            <td>{{ usuario.Apellido }}</td>
+            <td>{{ usuario.Correo }}</td>
+            <td>{{ usuario.Edad }} años</td>
+            <td>
+              <button class="btn-estado" [class.activo]="usuario.Estado === 1" [class.inactivo]="usuario.Estado === 0" (click)="toggleEstado(usuario)">
+                {{ usuario.Estado === 1 ? '✅ Activo' : '❌ Inactivo' }}
+              </button>
+            </td>
+            <td class="acciones">
+              <button class="btn-editar" (click)="editarUsuario(usuario)">✏️ Editar</button>
+              <button class="btn-eliminar" (click)="eliminarUsuario(usuario.Id_Usuario)">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

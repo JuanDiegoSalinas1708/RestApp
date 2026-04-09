@@ -1,0 +1,66 @@
+<div class="layout">
+ 
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.cerrado]="!menuAbierto">
+    <div class="sidebar-header">
+      <span class="logo" *ngIf="menuAbierto">App <strong>Rest</strong></span>
+      <button class="toggle-btn" (click)="toggleMenu()">
+        {{ menuAbierto ? '◀' : '▶' }}
+      </button>
+    </div>
+ 
+    <nav class="nav-menu">
+      <a
+        *ngFor="let item of menuItems"
+        [routerLink]="item.ruta"
+        routerLinkActive="activo"
+        class="nav-item"
+        [title]="item.label"
+      >
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label" *ngIf="menuAbierto">{{ item.label }}</span>
+      </a>
+    </nav>
+ 
+    <div class="sidebar-footer" *ngIf="menuAbierto">
+      <div class="usuario-info">
+        <div class="avatar">{{ usuario?.nombre?.charAt(0) | uppercase }}</div>
+        <div class="usuario-datos">
+          <span class="nombre">{{ usuario?.nombre }}</span>
+          <span class="rol">{{ usuario?.rol || 'Usuario' }}</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+ 
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main">
+ 
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-izquierda">
+        <h2 class="pagina-titulo">Bienvenido, {{ usuario?.nombre }} 👋</h2>
+      </div>
+      <div class="topbar-derecha">
+        <button class="btn-cerrar" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </div>
+    </header>
+ 
+    <!-- CONTENIDO -->
+    <main class="contenido">
+ 
+   
+      <div class="dashboard-cards" *ngIf="esHome()">
+        <div class="card" *ngFor="let item of menuItems" [routerLink]="item.ruta">
+          <div class="card-icon">{{ item.icon }}</div>
+          <div class="card-label">{{ item.label }}</div>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+ 
+      <router-outlet></router-outlet>
+    </main>
+ 
+  </div>
+</div>
+ 

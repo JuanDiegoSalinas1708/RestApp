@@ -1,0 +1,136 @@
+<div class="dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>📊 Panel de Control</h1>
+    <p>Bienvenido al sistema de gestión</p>
+  </div>
+
+  <!-- Tarjetas de resumen -->
+  <div class="cards-grid">
+    <div class="card" (click)="irAModulo('/home/productos')">
+      <div class="card-icon">📦</div>
+      <div class="card-info">
+        <h3>{{ totalProductos }}</h3>
+        <p>Productos</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <div class="card" (click)="irAModulo('/home/inventario')">
+      <div class="card-icon">🗄️</div>
+      <div class="card-info">
+        <h3>{{ totalInventario }}</h3>
+        <p>Registros en Inventario</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <div class="card" (click)="irAModulo('/home/ordenes')">
+      <div class="card-icon">📋</div>
+      <div class="card-info">
+        <h3>{{ totalOrdenes }}</h3>
+        <p>Órdenes</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <div class="card" (click)="irAModulo('/home/usuarios')">
+      <div class="card-icon">👥</div>
+      <div class="card-info">
+        <h3>{{ totalUsuarios }}</h3>
+        <p>Usuarios</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- Estadísticas y alertas -->
+  <div class="stats-row">
+    <!-- Estados de órdenes -->
+    <div class="stats-card">
+      <h3>📊 Estado de Órdenes</h3>
+      <div class="stats-bars">
+        <div class="stat-bar">
+          <span class="stat-label">Pendientes</span>
+          <div class="bar-container">
+            <div class="bar pendiente" [style.width.%]="(ordenesPendientes / totalOrdenes) * 100 || 0"></div>
+          </div>
+          <span class="stat-value">{{ ordenesPendientes }}</span>
+        </div>
+        <div class="stat-bar">
+          <span class="stat-label">Pagadas</span>
+          <div class="bar-container">
+            <div class="bar pagado" [style.width.%]="(ordenesPagadas / totalOrdenes) * 100 || 0"></div>
+          </div>
+          <span class="stat-value">{{ ordenesPagadas }}</span>
+        </div>
+        <div class="stat-bar">
+          <span class="stat-label">Enviadas</span>
+          <div class="bar-container">
+            <div class="bar enviado" [style.width.%]="(ordenesEnviadas / totalOrdenes) * 100 || 0"></div>
+          </div>
+          <span class="stat-value">{{ ordenesEnviadas }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos con bajo stock -->
+    <div class="stats-card alert-card" *ngIf="productosBajoStock.length > 0">
+      <h3>⚠️ Alerta: Productos con Stock Bajo</h3>
+      <div class="alert-list">
+        <div class="alert-item" *ngFor="let item of productosBajoStock.slice(0, 5)">
+          <span class="alert-producto">Producto #{{ item.Id_Producto }}</span>
+          <span class="alert-stock">Stock: {{ item.Stock }} unidades</span>
+        </div>
+        <div *ngIf="productosBajoStock.length === 0" class="sin-alertas">
+          ✅ No hay productos con stock bajo
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimas órdenes -->
+  <div class="ultimas-ordenes">
+    <h3>🕐 Últimas Órdenes</h3>
+    <div class="tabla-wrapper">
+      <table *ngIf="ultimasOrdenes.length > 0; else sinOrdenes">
+        <thead>
+          <tr>
+            <th>ID Orden</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>ID Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let orden of ultimasOrdenes">
+            <td>#{{ orden.Id_Orden }}</td>
+            <td><span class="estado-badge" [ngClass]="getEstadoClass(orden.Estado)">{{ orden.Estado }}</span></td>
+            <td>{{ orden.Fecha | date:'dd/MM/yyyy' }}</td>
+            <td>Usuario #{{ orden.Id_Usuario }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #sinOrdenes>
+        <div class="empty-state">No hay órdenes registradas</div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Accesos rápidos -->
+  <div class="accesos-rapidos">
+    <h3>🚀 Accesos Rápidos</h3>
+    <div class="accesos-grid">
+      <button class="acceso-btn" (click)="irAModulo('/home/productos')">📦 Gestionar Productos</button>
+      <button class="acceso-btn" (click)="irAModulo('/home/inventario')">🗄️ Ver Inventario</button>
+      <button class="acceso-btn" (click)="irAModulo('/home/ordenes')">📋 Crear Orden</button>
+      <button class="acceso-btn" (click)="irAModulo('/home/usuarios')">👥 Administrar Usuarios</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+</div>

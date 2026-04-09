@@ -1,0 +1,91 @@
+<div class="inventario-container">
+  <div class="contenido">
+    <h2>📦 Gestión de Inventario</h2>
+
+    <!-- Formulario para crear registro -->
+    <div class="form-container">
+      <h3>Agregar Nuevo Registro</h3>
+      <form (ngSubmit)="crearItem()">
+        <div class="campo">
+          <select [(ngModel)]="nuevoItem.Id_Producto" name="Id_Producto" required>
+            <option value="" disabled selected>Seleccionar Producto</option>
+            <option *ngFor="let p of productos" [value]="p.Id_Producto">
+              {{ p.Nombre }}
+            </option>
+          </select>
+        </div>
+        <div class="campo">
+          <input 
+            type="number" 
+            [(ngModel)]="nuevoItem.Stock" 
+            name="Stock" 
+            placeholder="Cantidad en Stock" 
+            min="0"
+            required>
+        </div>
+        <button type="submit" class="btn-agregar">Agregar Inventario</button>
+      </form>
+    </div>
+
+    <!-- Formulario para editar registro -->
+    <div *ngIf="editandoItem" class="form-container form-editar">
+      <h3>✏️ Editar Registro de Inventario</h3>
+      <form (ngSubmit)="guardarEdicion()">
+        <div class="campo">
+          <select [(ngModel)]="editandoItem.Id_Producto" name="Id_Producto" required>
+            <option value="" disabled>Seleccionar Producto</option>
+            <option *ngFor="let p of productos" [value]="p.Id_Producto" [selected]="p.Id_Producto === editandoItem.Id_Producto">
+              {{ p.Nombre }}
+            </option>
+          </select>
+        </div>
+        <div class="campo">
+          <input 
+            type="number" 
+            [(ngModel)]="editandoItem.Stock" 
+            name="Stock" 
+            placeholder="Cantidad en Stock" 
+            min="0"
+            required>
+        </div>
+        <div class="botones-accion">
+          <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+          <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">❌ Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla de inventario -->
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Inventario</th>
+            <th>Producto</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of inventario">
+            <td>{{ item.Id_Inventario }}</td>
+            <td><strong>{{ obtenerNombreProducto(item.Id_Producto) }}</strong></td>
+            <td [class.stock-bajo]="item.Stock <= 5" [class.stock-critico]="item.Stock === 0">
+              {{ item.Stock }} unidades
+            </td>
+            <td>
+              <span *ngIf="item.Stock === 0" class="estado-critico">⚠️ Sin stock</span>
+              <span *ngIf="item.Stock > 0 && item.Stock <= 5" class="estado-bajo">📉 Stock bajo</span>
+              <span *ngIf="item.Stock > 5" class="estado-normal">✅ Stock suficiente</span>
+            </td>
+            <td class="acciones">
+              <button class="btn-editar" (click)="editarItem(item)">✏️ Editar</button>
+              <button class="btn-eliminar" (click)="eliminarItem(item.Id_Inventario)">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+       </table>
+    </div>
+  </div>
+</div>

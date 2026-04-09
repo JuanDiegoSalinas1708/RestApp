@@ -1,0 +1,117 @@
+<div class="detalle-container">
+  <div class="contenido">
+    <h2>📋 Detalle de Órdenes</h2>
+
+    <!-- Formulario para crear detalle -->
+    <div class="form-container">
+      <h3>➕ Agregar Detalle a Orden</h3>
+      <form (ngSubmit)="crearDetalle()">
+        <div class="form-row">
+          <div class="campo">
+            <select [(ngModel)]="nuevoDetalle.Id_Orden" name="Id_Orden" required>
+              <option value="" disabled selected>Seleccionar Orden</option>
+              <option *ngFor="let o of ordenes" [value]="o.Id_Orden">
+                Orden #{{ o.Id_Orden }} - {{ o.Estado }}
+              </option>
+            </select>
+          </div>
+          <div class="campo">
+            <select [(ngModel)]="nuevoDetalle.Id_Producto" name="Id_Producto" required>
+              <option value="" disabled selected>Seleccionar Producto</option>
+              <option *ngFor="let p of productos" [value]="p.id">
+                {{ p.nombre }} - ${{ p.precio }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="campo">
+            <input type="number" [(ngModel)]="nuevoDetalle.Cantidad" name="Cantidad" placeholder="Cantidad" min="1" required>
+          </div>
+          <div class="campo">
+            <input type="number" [(ngModel)]="nuevoDetalle.Precio" name="Precio" placeholder="Precio unitario" step="0.01" min="0.01" required>
+          </div>
+          <div class="campo subtotal">
+            <label>Subtotal: ${{ calcularSubtotal() | number:'1.2-2' }}</label>
+          </div>
+        </div>
+        <button type="submit" class="btn-agregar">Agregar Detalle</button>
+      </form>
+    </div>
+
+    <!-- Formulario para editar detalle -->
+    <div *ngIf="editandoDetalle" class="form-container form-editar">
+      <h3>✏️ Editar Detalle de Orden</h3>
+      <form (ngSubmit)="guardarEdicion()">
+        <div class="form-row">
+          <div class="campo">
+            <select [(ngModel)]="editandoDetalle.Id_Orden" name="Id_Orden" required>
+              <option *ngFor="let o of ordenes" [value]="o.Id_Orden">
+                Orden #{{ o.Id_Orden }} - {{ o.Estado }}
+              </option>
+            </select>
+          </div>
+          <div class="campo">
+            <select [(ngModel)]="editandoDetalle.Id_Producto" name="Id_Producto" required>
+              <option *ngFor="let p of productos" [value]="p.id">
+                {{ p.nombre }} - ${{ p.precio }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="campo">
+            <input type="number" [(ngModel)]="editandoDetalle.Cantidad" name="Cantidad" placeholder="Cantidad" min="1" required>
+          </div>
+          <div class="campo">
+            <input type="number" [(ngModel)]="editandoDetalle.Precio" name="Precio" placeholder="Precio unitario" step="0.01" min="0.01" required>
+          </div>
+          <div class="campo subtotal">
+            <label>Subtotal: ${{ calcularSubtotalEdicion() | number:'1.2-2' }}</label>
+          </div>
+        </div>
+        <div class="botones-accion">
+          <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+          <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">❌ Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla de detalles -->
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Detalle</th>
+            <th>Orden</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detalle of detalles">
+            <td>#{{ detalle.Id_Detalle }}</td>
+            <td>{{ obtenerNumeroOrden(detalle.Id_Orden) }}</td>
+            <td>{{ obtenerNombreProducto(detalle.Id_Producto) }}</td>
+            <td>{{ detalle.Cantidad }}</td>
+            <td>${{ detalle.Precio | number:'1.2-2' }}</td>
+            <td class="subtotal-cell">${{ (detalle.Cantidad * detalle.Precio) | number:'1.2-2' }}</td>
+            <td class="acciones">
+              <button class="btn-editar" (click)="editarDetalle(detalle)">✏️ Editar</button>
+              <button class="btn-eliminar" (click)="eliminarDetalle(detalle.Id_Detalle)">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="5"><strong>Total General:</strong></td>
+            <td colspan="2"><strong>${{ calcularTotalGeneral() | number:'1.2-2' }}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

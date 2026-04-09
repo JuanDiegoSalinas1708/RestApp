@@ -23,7 +23,7 @@ export class LoginComponent{
             next:(res)=>{
                 if(res.status === 'ok'){
                     localStorage.setItem('usuario',JSON.stringify(res.usuario));
-                    this.router.navigate(['/productos']);
+                    this.router.navigate(['/home']);
                 }
             },
             error: (err)=>{

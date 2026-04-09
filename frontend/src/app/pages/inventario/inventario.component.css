@@ -1,4 +1,4 @@
-.productos-container {
+.inventario-container {
   min-height: 100vh;
   background-color: #f0f2f5;
 }
@@ -42,16 +42,19 @@ h2 {
   margin-bottom: 12px;
 }
 
-.campo input {
+.campo input,
+.campo select {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
   box-sizing: border-box;
+  background: white;
 }
 
-.campo input:focus {
+.campo input:focus,
+.campo select:focus {
   outline: none;
   border-color: #1976d2;
 }
@@ -145,6 +148,41 @@ tbody tr:hover {
   background-color: #f5f5f5;
 }
 
+/* Estados de stock */
+.stock-bajo {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.stock-critico {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.estado-normal {
+  background-color: #4caf50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.estado-bajo {
+  background-color: #ff9800;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.estado-critico {
+  background-color: #f44336;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
 /* Botones de acción en tabla */
 .acciones {
   display: flex;
@@ -184,17 +222,18 @@ tbody tr:hover {
   .contenido {
     padding: 16px;
   }
-  
+
   .acciones {
     flex-direction: column;
     gap: 6px;
   }
-  
-  .btn-editar, .btn-eliminar {
+
+  .btn-editar,
+  .btn-eliminar {
     width: 100%;
     text-align: center;
   }
-  
+
   .botones-accion {
     flex-direction: column;
   }

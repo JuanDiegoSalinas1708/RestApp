@@ -1,0 +1,91 @@
+<div class="ordenes-container">
+  <div class="contenido">
+    <h2>📋 Gestión de Órdenes</h2>
+
+    <!-- Formulario para crear orden -->
+    <div class="form-container">
+      <h3>➕ Agregar Nueva Orden</h3>
+      <form (ngSubmit)="crearOrden()">
+        <div class="campo">
+          <select [(ngModel)]="nuevaOrden.Estado" name="Estado" required>
+            <option value="" disabled selected>Seleccionar Estado</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Pagado">Pagado</option>
+            <option value="Enviado">Enviado</option>
+          </select>
+        </div>
+        <div class="campo">
+          <input type="date" [(ngModel)]="nuevaOrden.Fecha" name="Fecha" required>
+        </div>
+        <div class="campo">
+          <select [(ngModel)]="nuevaOrden.Id_Usuario" name="Id_Usuario" required>
+            <option value="" disabled selected>Seleccionar Usuario</option>
+            <option *ngFor="let u of usuarios" [value]="u.Id_Usuario">
+              {{ u.Nombre }} {{ u.Apellido }}
+            </option>
+          </select>
+        </div>
+        <button type="submit" class="btn-agregar">Agregar Orden</button>
+      </form>
+    </div>
+
+    <!-- Formulario para editar orden -->
+    <div *ngIf="editandoOrden" class="form-container form-editar">
+      <h3>✏️ Editar Orden</h3>
+      <form (ngSubmit)="guardarEdicion()">
+        <div class="campo">
+          <select [(ngModel)]="editandoOrden.Estado" name="Estado" required>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Pagado">Pagado</option>
+            <option value="Enviado">Enviado</option>
+          </select>
+        </div>
+        <div class="campo">
+          <input type="date" [(ngModel)]="editandoOrden.Fecha" name="Fecha" required>
+        </div>
+        <div class="campo">
+          <select [(ngModel)]="editandoOrden.Id_Usuario" name="Id_Usuario" required>
+            <option *ngFor="let u of usuarios" [value]="u.Id_Usuario">
+              {{ u.Nombre }} {{ u.Apellido }}
+            </option>
+          </select>
+        </div>
+        <div class="botones-accion">
+          <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+          <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">❌ Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla de órdenes -->
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Orden</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let orden of ordenes">
+            <td>{{ orden.Id_Orden }}</td>
+            <td>
+              <span class="estado-badge" [ngClass]="getEstadoClass(orden.Estado)">
+                {{ orden.Estado }}
+              </span>
+            </td>
+            <td>{{ orden.Fecha | date:'dd/MM/yyyy' }}</td>
+            <td>{{ obtenerNombreUsuario(orden.Id_Usuario) }}</td>
+            <td class="acciones">
+              <button class="btn-editar" (click)="editarOrden(orden)">✏️ Editar</button>
+              <button class="btn-eliminar" (click)="eliminarOrden(orden.Id_Orden)">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
