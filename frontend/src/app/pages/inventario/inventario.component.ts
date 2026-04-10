@@ -27,42 +27,48 @@ export class InventarioComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        const u = localStorage.getItem('usuario');
-        if (!u) {
+        const data = localStorage.getItem('usuario') ?? sessionStorage.getItem('usuario');
+        if (!data) {
             this.router.navigate(['/login']);
             return;
         }
-        this.usuario = JSON.parse(u);
+        this.usuario = JSON.parse(data);
         this.cargarProductos();
         this.cargarInventario();
     }
 
     cargarProductos() {
-        this.productosService.getProductos().subscribe({
-            next: (res) => {
-                if (res.status === 'ok') {
-                    this.productos = res.data;
-                }
-            },
-            error: () => {
-                console.error('Error al cargar productos');
+    console.log('🔍 Cargando productos...');  // Debug
+    this.productosService.getProductos().subscribe({
+        next: (res) => {
+            console.log('✅ Respuesta productos:', res);  // Debug
+            if (res.status === 'ok') {
+                this.productos = res.data;
             }
-        });
-    }
+        },
+        error: (err) => {
+            console.error('❌ Error productos:', err);  // Debug
+        }
+    });
+}
 
     cargarInventario() {
-        this.inventarioService.getInventario().subscribe({
-            next: (res) => {
-                if (res.status === 'ok') {
-                    this.inventario = res.data;
-                }
-            },
-            error: () => {
-                this.router.navigate(['/login']);
+    console.log('🔍 Cargando inventario...');  
+    this.inventarioService.getInventario().subscribe({
+        next: (res) => {
+            console.log('✅ Respuesta inventario:', res);  
+            if (res.status === 'ok') {
+                this.inventario = res.data;
             }
-        });
-    }
-
+        },
+        error: (err) => {
+            console.error('❌ Error inventario:', err);  
+            console.error('Status:', err.status);  
+            console.error('Mensaje:', err.message);  
+            
+        }
+    });
+}
     obtenerNombreProducto(idProducto: number): string {
         const producto = this.productos.find(p => p.Id_Producto === idProducto);
         return producto ? producto.Nombre : 'Producto no encontrado';

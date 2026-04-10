@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=../vendor/symfony/routing/Loader/schema/routing.schema.json
-
 # ============ AUTENTICACIÓN ============
 
 api_login:
@@ -33,6 +31,101 @@ api_productos_delete:
     path: /api/productos/{id}
     controller: App\Controller\ApiController::eliminarProducto
     methods: [DELETE]
+
+# ============ INVENTARIO ============
+
+api_inventario_get:
+    path: /api/inventario
+    controller: App\Controller\ApiController::inventario
+    methods: [GET]
+
+api_inventario_post:
+    path: /api/inventario
+    controller: App\Controller\ApiController::crearInventario
+    methods: [POST]
+
+api_inventario_put:
+    path: /api/inventario/{id}
+    controller: App\Controller\ApiController::editarInventario
+    methods: [PUT]
+
+api_inventario_delete:
+    path: /api/inventario/{id}
+    controller: App\Controller\ApiController::eliminarInventario
+    methods: [DELETE]
+
+# ============ ORDENES ============
+
+api_ordenes_get:
+    path: /api/ordenes
+    controller: App\Controller\ApiController::ordenes
+    methods: [GET]
+
+api_ordenes_post:
+    path: /api/ordenes
+    controller: App\Controller\ApiController::crearOrden
+    methods: [POST]
+
+api_ordenes_put:
+    path: /api/ordenes/{id}
+    controller: App\Controller\ApiController::editarOrden
+    methods: [PUT]
+
+api_ordenes_delete:
+    path: /api/ordenes/{id}
+    controller: App\Controller\ApiController::eliminarOrden
+    methods: [DELETE]
+
+# ============ DETALLE ORDEN ============
+
+api_detalle_orden_get:
+    path: /api/detalle-orden
+    controller: App\Controller\ApiController::detalleOrden
+    methods: [GET]
+
+api_detalle_orden_post:
+    path: /api/detalle-orden
+    controller: App\Controller\ApiController::crearDetalleOrden
+    methods: [POST]
+
+api_detalle_orden_put:
+    path: /api/detalle-orden/{id}
+    controller: App\Controller\ApiController::editarDetalleOrden
+    methods: [PUT]
+
+api_detalle_orden_delete:
+    path: /api/detalle-orden/{id}
+    controller: App\Controller\ApiController::eliminarDetalleOrden
+    methods: [DELETE]
+
+# ============ USUARIOS ============
+
+api_usuarios_todos:
+    path: /api/usuarios/todos
+    controller: App\Controller\ApiController::todosUsuarios
+    methods: [GET]
+
+api_usuarios_get:
+    path: /api/usuarios/{id}
+    controller: App\Controller\ApiController::getUsuario
+    methods: [GET]
+
+api_usuarios_post:
+    path: /api/usuarios
+    controller: App\Controller\ApiController::crearUsuario
+    methods: [POST]
+
+api_usuarios_put:
+    path: /api/usuarios/{id}
+    controller: App\Controller\ApiController::editarUsuario
+    methods: [PUT]
+
+api_usuarios_delete:
+    path: /api/usuarios/{id}
+    controller: App\Controller\ApiController::eliminarUsuario
+    methods: [DELETE]
+
+# ============ CONTROLLERS ============
 
 controllers:
     resource: '../src/Controller/'

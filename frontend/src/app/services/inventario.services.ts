@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class InventarioService {
-    private apiUrl = 'https://localhost:8000/api';  // ✅ SOLO HASTA /api
+    private apiUrl = '/api';
 
     constructor(private http: HttpClient) {}
 

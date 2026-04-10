@@ -28,12 +28,12 @@ export class DetalleOrdenComponent implements OnInit{
         private router:Router
     ){}
     ngOnInit(){
-        const u = localStorage.getItem('usuario');
-        if(!u){
+        const data = localStorage.getItem('usuario') ?? sessionStorage.getItem('usuario');
+        if(!data){
             this.router.navigate(['/login']);
             return;
         }
-        this.usuario = JSON.parse(u);
+        this.usuario = JSON.parse(data);
         this.cargarOrdenes();
         this.cargarProductos();
         this.cargarDetalles();
@@ -70,7 +70,8 @@ export class DetalleOrdenComponent implements OnInit{
                 }
             },
             error:() => {
-                this.router.navigate(['/login']);
+                console.error('Error al cargar detalles de orden');
+                alert('Error al cargar los detalles de orden. Por favor, inténtalo de nuevo.');
             }
         });
      }

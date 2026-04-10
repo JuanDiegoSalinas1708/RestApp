@@ -22,13 +22,30 @@ class Inventario
     private ?Productos $producto = null;
 
     public function getId(): ?int
-    {
+     {
         return $this->id;
     }
 
     public function getStock(): ?int
     {
         return $this->stock;
+    }
+
+    public function getIdInventario(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getIdProducto(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setIdProducto(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setStock(int $stock): static

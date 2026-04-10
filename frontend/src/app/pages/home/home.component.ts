@@ -25,12 +25,16 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const data = localStorage.getItem('usuario');
+    const data = this.obtenerUsuarioAlmacenado();
     if (data) {
       this.usuario = JSON.parse(data);
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  private obtenerUsuarioAlmacenado(): string | null {
+    return localStorage.getItem('usuario') ?? sessionStorage.getItem('usuario');
   }
 
   // Muestra las cards solo si estás exactamente en /home
@@ -44,6 +48,8 @@ export class HomeComponent implements OnInit {
 
   cerrarSesion() {
     localStorage.removeItem('usuario');
+    localStorage.removeItem('rememberMe');
+    sessionStorage.removeItem('usuario');
     this.router.navigate(['/login']);
   }
 }

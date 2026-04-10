@@ -533,10 +533,10 @@ final class ApiController extends AbstractController
     {
         $ordenes = array_map(static function ($orden) {
             return [
-                'Id_Orden' => $orden->getIdOrden(),
+                'Id_Orden' => $orden->getId(),
                 'Estado' => $orden->getEstado(),
                 'Fecha' => $orden->getFecha()->format('Y-m-d'),
-                'Id_Usuario' => $orden->getIdUsuario(),
+                'Id_Usuario' => $orden->getIdUsuario()->getId(),
             ];
         }, $ordenesRepository->findAll());
 
@@ -657,7 +657,7 @@ final class ApiController extends AbstractController
     {
         $detalles = array_map(static function ($detalle) {
             return [
-                'Id_Detalle' => $detalle->getIdDetalle(),
+                'Id_Detalle' => $detalle->getId(),
                 'Cantidad' => $detalle->getCantidad(),
                 'Precio' => $detalle->getPrecio(),
                 'Id_Orden' => $detalle->getIdOrden(),

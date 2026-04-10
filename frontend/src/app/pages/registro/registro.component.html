@@ -1,37 +1,46 @@
 <div class="registro-container">
   <div class="registro-card">
-    <h2>Crear Cuenta</h2>
-
-    <div *ngIf="error" class="error">{{ error }}</div>
-    <div *ngIf="exito" class="exito">{{ exito }}</div>
-
-    <div class="form-group">
-      <label>Nombre</label>
-      <input type="text" [(ngModel)]="nombre" placeholder="Tu nombre" />
+    <div class="registro-hero">
+      <div class="hero-content">
+        <h1>Únete ahora</h1>
+        <p>Registra tu cuenta y accede al panel de administración.</p>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label>Apellido</label>
-      <input type="text" [(ngModel)]="apellido" placeholder="Tu apellido" />
+    <div class="registro-form">
+      <h2>Crear Cuenta</h2>
+
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="exito" class="exito">{{ exito }}</div>
+
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="nombre" placeholder="Tu nombre" />
+      </div>
+
+      <div class="form-group">
+        <label>Apellido</label>
+        <input type="text" [(ngModel)]="apellido" placeholder="Tu apellido" />
+      </div>
+
+      <div class="form-group">
+        <label>Correo</label>
+        <input type="email" [(ngModel)]="correo" placeholder="correo@ejemplo.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••" />
+      </div>
+
+      <div class="form-group">
+        <label>Edad</label>
+        <input type="number" min="1" [(ngModel)]="edad" placeholder="25" />
+      </div>
+
+      <button type="button" (click)="registro()">Crear Cuenta</button>
+
+      <p class="register-text">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
     </div>
-
-    <div class="form-group">
-      <label>Correo</label>
-      <input type="email" [(ngModel)]="correo" placeholder="correo@ejemplo.com" />
-    </div>
-
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" [(ngModel)]="password" placeholder="••••••••" />
-    </div>
-
-    <div class="form-group">
-      <label>Edad</label>
-      <input type="number" [(ngModel)]="edad" placeholder="25" />
-    </div>
-
-    <button (click)="registro()">Crear Cuenta</button>
-
-    <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
   </div>
 </div>

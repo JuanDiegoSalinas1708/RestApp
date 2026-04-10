@@ -14,20 +14,34 @@ import { AuthService} from "../../services/auth.service";
 export class LoginComponent{
     correo='';
     password='';
+    rememberMe = false;
     error='';
 
     constructor(private authService:AuthService, private router:Router){}
 
     login(){
-        this.authService.login(this.correo,this.password).subscribe({
+        this.error = '';
+
+        if (!this.correo || !this.password) {
+            this.error = 'Debe ingresar correo y contraseña.';
+            return;
+        }
+
+        this.authService.login(this.correo, this.password, this.rememberMe).subscribe({
             next:(res)=>{
                 if(res.status === 'ok'){
-                    localStorage.setItem('usuario',JSON.stringify(res.usuario));
+                    const storage = this.rememberMe ? localStorage : sessionStorage;
+                    storage.setItem('usuario', JSON.stringify(res.usuario));
+                    if (this.rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    } else {
+                        localStorage.removeItem('rememberMe');
+                    }
                     this.router.navigate(['/home']);
                 }
             },
             error: (err)=>{
-                this.error=err.error.message || 'Error al iniciar sesion';
+                this.error = err.error?.message || 'Error al iniciar sesión';
             }
         });
     }

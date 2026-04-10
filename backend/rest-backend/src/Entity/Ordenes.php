@@ -40,6 +40,7 @@ class Ordenes
         return $this->id;
     }
 
+
     public function getEstado(): ?string
     {
         return $this->estado;
@@ -64,12 +65,12 @@ class Ordenes
         return $this;
     }
 
-    public function getUsuario(): ?Usuarios
+    public function getIdUsuario(): ?Usuarios
     {
         return $this->usuario;
     }
 
-    public function setUsuario(?Usuarios $usuario): static
+    public function setIdUsuario(?Usuarios $usuario): static
     {
         $this->usuario = $usuario;
 

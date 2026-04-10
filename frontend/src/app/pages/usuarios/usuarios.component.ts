@@ -23,12 +23,12 @@ export class UsuariosComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const u = localStorage.getItem('usuario');
-    if (!u) {
+    const data = localStorage.getItem('usuario') ?? sessionStorage.getItem('usuario');
+    if (!data) {
       this.router.navigate(['/login']);
       return;
     }
-    this.usuarioActual = JSON.parse(u);
+    this.usuarioActual = JSON.parse(data);
     this.cargarUsuarios();
   }
 

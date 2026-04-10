@@ -6,7 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DetalleOrdenService {
-  private apiUrl = 'https://localhost:8000/api';
+  getdetalleOrdenService() {
+    throw new Error('Method not implemented.');
+  }
+  private apiUrl = '/api';
 
   constructor(private http: HttpClient) {}
 

@@ -26,12 +26,12 @@ export class OrdenesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const u = localStorage.getItem('usuario');
-    if (!u) {
+    const data = localStorage.getItem('usuario') ?? sessionStorage.getItem('usuario');
+    if (!data) {
       this.router.navigate(['/login']);
       return;
     }
-    this.usuario = JSON.parse(u);
+    this.usuario = JSON.parse(data);
     this.cargarUsuarios();
     this.cargarOrdenes();
   }
