@@ -1,0 +1,131 @@
+
+
+
+//CREACION BASE DE DATOS//
+
+create Database RestDB;
+Go
+
+
+//TABLAS//
+
+use RestDB;
+Go
+
+ **Usuarios**
+
+create table Usuarios(
+Id_Usuario int primary Key Identity(1,1),
+Nombre NVarchar(50) not null,
+Apellido NVarchar (50) not null,
+Password Nvarchar (50) not null,
+Edad int not null,
+Correo Nvarchar (100) not null,
+Estado bit not null
+
+);
+
+
+INSERT INTO Usuarios (Nombre, Apellido, Password, Edad, Correo, Estado) VALUES
+('Juan','Perez','123',25,'juan1@gmail.com',1),
+('Maria','Gomez','123',30,'maria2@gmail.com',1),
+('Carlos','Lopez','123',28,'carlos3@gmail.com',1),
+('Ana','Martinez','123',22,'ana4@gmail.com',1),
+('Luis','Garcia','123',35,'luis5@gmail.com',1),
+('Sofia','Rodriguez','123',27,'sofia6@gmail.com',1),
+('Pedro','Hernandez','123',40,'pedro7@gmail.com',1),
+('Laura','Diaz','123',24,'laura8@gmail.com',1),
+('Diego','Torres','123',29,'diego9@gmail.com',1),
+('Valentina','Ruiz','123',26,'valentina10@gmail.com',1);
+
+ **Productos**
+
+create table Productos(
+Id_Producto int Primary Key Identity(1,1),
+Nombre Nvarchar(50) not null,
+Precio decimal(10,2) not null,
+Descripcion Nvarchar (255) not null 
+);
+
+
+INSERT INTO Productos (Nombre, Precio, Descripcion) VALUES
+('Camiseta',20.00,'Camiseta deportiva'),
+('Pantalon',50.00,'Pantalon jean'),
+('Zapatos',80.00,'Zapatos casuales'),
+('Gorra',15.00,'Gorra deportiva'),
+('Chaqueta',100.00,'Chaqueta impermeable'),
+('Medias',5.00,'Medias de algodon'),
+('Bolso',40.00,'Bolso escolar'),
+('Reloj',120.00,'Reloj digital'),
+('Perfume',60.00,'Perfume importado'),
+('Lentes',70.00,'Lentes de sol');
+
+ **Inventario**
+
+create table Inventario(
+Id_Inventario int Primary Key Identity(1,1),
+Id_Producto int not null,
+Foreign Key (Id_Producto) references Productos(Id_Producto),
+Stock int not null
+);
+
+
+INSERT INTO Inventario (Id_Producto, Stock) VALUES
+(1,100),
+(2,50),
+(3,30),
+(4,80),
+(5,20),
+(6,200),
+(7,60),
+(8,15),
+(9,25),
+(10,40);
+
+ **Ordenes**
+
+create table Ordenes(
+Id_Orden int Primary Key Identity(1,1),
+Estado NVarchar (20) not null,
+Fecha date not null,
+Id_Usuario int not null,
+Foreign Key (Id_Usuario) references Usuarios(Id_Usuario)
+);
+
+INSERT INTO Ordenes (Estado, Fecha, Id_Usuario) VALUES
+('Pendiente','2026-03-01',1),
+('Pagado','2026-03-02',2),
+('Enviado','2026-03-03',3),
+('Pendiente','2026-03-04',4),
+('Pagado','2026-03-05',5),
+('Enviado','2026-03-06',6),
+('Pendiente','2026-03-07',7),
+('Pagado','2026-03-08',8),
+('Enviado','2026-03-09',9),
+('Pendiente','2026-03-10',10);
+
+ **Detalle Orden**
+
+create table Detalle_Orden(
+Id_Detalle int Primary Key Identity(1,1),
+Cantidad int not null,
+Precio decimal (10,2) not null,
+Id_Orden int not null,
+Id_Producto int not null,
+Foreign Key (Id_Orden) References Ordenes(Id_Orden),
+Foreign Key (Id_Producto) References Productos(Id_Producto)
+
+);
+
+
+INSERT INTO Detalle_Orden (Cantidad, Precio, Id_Orden, Id_Producto) VALUES
+(2,20.00,1,1),
+(1,50.00,2,2),
+(1,80.00,3,3),
+(3,15.00,4,4),
+(1,100.00,5,5),
+(5,5.00,6,6),
+(2,40.00,7,7),
+(1,120.00,8,8),
+(1,60.00,9,9),
+(2,70.00,10,10);

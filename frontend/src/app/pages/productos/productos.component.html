@@ -59,11 +59,21 @@
             <td>{{ p.descripcion }}</td>
             <td class="acciones">
               <button class="btn-editar" (click)="editarProducto(p)">✏️ Editar</button>
-              <button class="btn-eliminar" (click)="eliminarProducto(p.id)">🗑️ Eliminar</button>
+              <button class="btn-eliminar" (click)="confirmarEliminar(p.id)">🗑️ Eliminar</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+  <!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  [mostrarCancelar]="modalMostrarCancelar"
+  (confirmado)="onModalConfirmado()"
+  (cancelado)="onModalCancelado()"
+></app-modal>
 </div>

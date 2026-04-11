@@ -9,17 +9,17 @@
         <div class="campo">
           <select [(ngModel)]="nuevoItem.Id_Producto" name="Id_Producto" required>
             <option value="" disabled selected>Seleccionar Producto</option>
-            <option *ngFor="let p of productos" [value]="p.Id_Producto">
-              {{ p.Nombre }}
+            <option *ngFor="let p of productos" [value]="p.id">
+              {{ p.nombre }}
             </option>
           </select>
         </div>
         <div class="campo">
-          <input 
-            type="number" 
-            [(ngModel)]="nuevoItem.Stock" 
-            name="Stock" 
-            placeholder="Cantidad en Stock" 
+          <input
+            type="number"
+            [(ngModel)]="nuevoItem.Stock"
+            name="Stock"
+            placeholder="Cantidad en Stock"
             min="0"
             required>
         </div>
@@ -34,17 +34,17 @@
         <div class="campo">
           <select [(ngModel)]="editandoItem.Id_Producto" name="Id_Producto" required>
             <option value="" disabled>Seleccionar Producto</option>
-            <option *ngFor="let p of productos" [value]="p.Id_Producto" [selected]="p.Id_Producto === editandoItem.Id_Producto">
-              {{ p.Nombre }}
+            <option *ngFor="let p of productos" [value]="p.id">
+              {{ p.nombre }}
             </option>
           </select>
         </div>
         <div class="campo">
-          <input 
-            type="number" 
-            [(ngModel)]="editandoItem.Stock" 
-            name="Stock" 
-            placeholder="Cantidad en Stock" 
+          <input
+            type="number"
+            [(ngModel)]="editandoItem.Stock"
+            name="Stock"
+            placeholder="Cantidad en Stock"
             min="0"
             required>
         </div>
@@ -81,11 +81,21 @@
             </td>
             <td class="acciones">
               <button class="btn-editar" (click)="editarItem(item)">✏️ Editar</button>
-              <button class="btn-eliminar" (click)="eliminarItem(item.Id_Inventario)">🗑️ Eliminar</button>
+              <button class="btn-eliminar" (click)="confirmarEliminar(item.Id_Inventario)">🗑️ Eliminar</button>
             </td>
           </tr>
         </tbody>
-       </table>
+      </table>
     </div>
   </div>
+
+  <app-modal
+    [visible]="modalVisible"
+    [titulo]="modalTitulo"
+    [mensaje]="modalMensaje"
+    [tipo]="modalTipo"
+    [mostrarCancelar]="modalMostrarCancelar"
+    (confirmado)="onModalConfirmado()"
+    (cancelado)="onModalCancelado()"
+  ></app-modal>
 </div>

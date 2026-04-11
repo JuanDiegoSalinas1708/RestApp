@@ -6,24 +6,24 @@
     <div class="form-container">
       <h3>➕ Agregar Nueva Orden</h3>
       <form (ngSubmit)="crearOrden()">
-        <div class="campo">
-          <select [(ngModel)]="nuevaOrden.Estado" name="Estado" required>
-            <option value="" disabled selected>Seleccionar Estado</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Pagado">Pagado</option>
-            <option value="Enviado">Enviado</option>
-          </select>
-        </div>
-        <div class="campo">
-          <input type="date" [(ngModel)]="nuevaOrden.Fecha" name="Fecha" required>
-        </div>
-        <div class="campo">
-          <select [(ngModel)]="nuevaOrden.Id_Usuario" name="Id_Usuario" required>
-            <option value="" disabled selected>Seleccionar Usuario</option>
-            <option *ngFor="let u of usuarios" [value]="u.Id_Usuario">
-              {{ u.Nombre }} {{ u.Apellido }}
-            </option>
-          </select>
+        <div class="form-row">
+          <div class="campo">
+            <select [(ngModel)]="nuevaOrden.Estado" name="Estado" required>
+              <option value="" disabled selected>Seleccionar Estado</option>
+              <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+            </select>
+          </div>
+          <div class="campo">
+            <input type="date" [(ngModel)]="nuevaOrden.Fecha" name="Fecha" required>
+          </div>
+          <div class="campo">
+            <select [(ngModel)]="nuevaOrden.Id_Usuario" name="Id_Usuario" required>
+              <option value="" disabled selected>Seleccionar Usuario</option>
+              <option *ngFor="let u of usuarios" [value]="u.Id_Usuario">
+                {{ u.Nombre }} {{ u.Apellido }}
+              </option>
+            </select>
+          </div>
         </div>
         <button type="submit" class="btn-agregar">Agregar Orden</button>
       </form>
@@ -33,22 +33,22 @@
     <div *ngIf="editandoOrden" class="form-container form-editar">
       <h3>✏️ Editar Orden</h3>
       <form (ngSubmit)="guardarEdicion()">
-        <div class="campo">
-          <select [(ngModel)]="editandoOrden.Estado" name="Estado" required>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Pagado">Pagado</option>
-            <option value="Enviado">Enviado</option>
-          </select>
-        </div>
-        <div class="campo">
-          <input type="date" [(ngModel)]="editandoOrden.Fecha" name="Fecha" required>
-        </div>
-        <div class="campo">
-          <select [(ngModel)]="editandoOrden.Id_Usuario" name="Id_Usuario" required>
-            <option *ngFor="let u of usuarios" [value]="u.Id_Usuario">
-              {{ u.Nombre }} {{ u.Apellido }}
-            </option>
-          </select>
+        <div class="form-row">
+          <div class="campo">
+            <select [(ngModel)]="editandoOrden.Estado" name="Estado" required>
+              <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+            </select>
+          </div>
+          <div class="campo">
+            <input type="date" [(ngModel)]="editandoOrden.Fecha" name="Fecha" required>
+          </div>
+          <div class="campo">
+            <select [(ngModel)]="editandoOrden.Id_Usuario" name="Id_Usuario" required>
+              <option *ngFor="let u of usuarios" [value]="u.Id_Usuario">
+                {{ u.Nombre }} {{ u.Apellido }}
+              </option>
+            </select>
+          </div>
         </div>
         <div class="botones-accion">
           <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
@@ -71,7 +71,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let orden of ordenes">
-            <td>{{ orden.Id_Orden }}</td>
+            <td>#{{ orden.Id_Orden }}</td>
             <td>
               <span class="estado-badge" [ngClass]="getEstadoClass(orden.Estado)">
                 {{ orden.Estado }}
@@ -81,7 +81,7 @@
             <td>{{ obtenerNombreUsuario(orden.Id_Usuario) }}</td>
             <td class="acciones">
               <button class="btn-editar" (click)="editarOrden(orden)">✏️ Editar</button>
-              <button class="btn-eliminar" (click)="eliminarOrden(orden.Id_Orden)">🗑️ Eliminar</button>
+              <button class="btn-eliminar" (click)="confirmarEliminar(orden.Id_Orden)">🗑️ Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -89,3 +89,14 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  [mostrarCancelar]="modalMostrarCancelar"
+  (confirmado)="onModalConfirmado()"
+  (cancelado)="onModalCancelado()"
+></app-modal>

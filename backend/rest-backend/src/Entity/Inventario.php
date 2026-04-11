@@ -17,18 +17,13 @@ class Inventario
     #[ORM\Column(name: 'Stock')]
     private ?int $stock = null;
 
-#[ORM\ManyToOne(targetEntity: Productos::class, inversedBy: 'inventarios')]
+    #[ORM\ManyToOne(targetEntity: Productos::class, inversedBy: 'inventarios')]
     #[ORM\JoinColumn(name: 'Id_Producto', referencedColumnName: 'Id_Producto', nullable: false, onDelete: 'CASCADE')]
     private ?Productos $producto = null;
 
     public function getId(): ?int
-     {
-        return $this->id;
-    }
-
-    public function getStock(): ?int
     {
-        return $this->stock;
+        return $this->id;
     }
 
     public function getIdInventario(): ?int
@@ -36,22 +31,20 @@ class Inventario
         return $this->id;
     }
 
+    // ✅ Devuelve el ID del producto desde la relación
     public function getIdProducto(): ?int
     {
-        return $this->id;
+        return $this->producto?->getId();
     }
 
-    public function setIdProducto(int $id): static
+    public function getStock(): ?int
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->stock;
     }
 
     public function setStock(int $stock): static
     {
         $this->stock = $stock;
-
         return $this;
     }
 
@@ -63,7 +56,7 @@ class Inventario
     public function setProducto(?Productos $producto): static
     {
         $this->producto = $producto;
-
         return $this;
     }
+    // ❌ setIdProducto() fue eliminado — no debe existir
 }

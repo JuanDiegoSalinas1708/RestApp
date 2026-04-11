@@ -19,7 +19,7 @@
             <input type="email" [(ngModel)]="nuevoUsuario.Correo" name="Correo" placeholder="Correo electrónico" required>
           </div>
           <div class="campo">
-            <input type="number" [(ngModel)]="nuevoUsuario.Edad" name="Edad" placeholder="Edad" min="0" required>
+            <input type="number" [(ngModel)]="nuevoUsuario.Edad" name="Edad" placeholder="Edad" min="1" required>
           </div>
         </div>
         <div class="campo">
@@ -46,7 +46,7 @@
             <input type="email" [(ngModel)]="editandoUsuario.Correo" name="Correo" placeholder="Correo electrónico" required>
           </div>
           <div class="campo">
-            <input type="number" [(ngModel)]="editandoUsuario.Edad" name="Edad" placeholder="Edad" min="0" required>
+            <input type="number" [(ngModel)]="editandoUsuario.Edad" name="Edad" placeholder="Edad" min="1" required>
           </div>
         </div>
         <div class="campo">
@@ -87,7 +87,7 @@
             </td>
             <td class="acciones">
               <button class="btn-editar" (click)="editarUsuario(usuario)">✏️ Editar</button>
-              <button class="btn-eliminar" (click)="eliminarUsuario(usuario.Id_Usuario)">🗑️ Eliminar</button>
+              <button class="btn-eliminar" (click)="confirmarEliminar(usuario.Id_Usuario)">🗑️ Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -95,3 +95,14 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  [mostrarCancelar]="modalMostrarCancelar"
+  (confirmado)="onModalConfirmado()"
+  (cancelado)="onModalCancelado()"
+></app-modal>

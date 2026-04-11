@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UsuariosService } from '../../services/usuarios.service';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
@@ -16,6 +17,14 @@ export class UsuariosComponent implements OnInit {
   usuarioActual: any = null;
   nuevoUsuario: any = { Nombre: '', Apellido: '', Correo: '', Password: '', Edad: '' };
   editandoUsuario: any = null;
+
+  // Modal
+  modalVisible = false;
+  modalTitulo = '';
+  modalMensaje = '';
+  modalTipo: 'success' | 'error' | 'warning' | 'info' = 'info';
+  modalAccionConfirmar: () => void = () => {};
+  modalMostrarCancelar = true;
 
   constructor(
     private usuariosService: UsuariosService,
@@ -32,41 +41,89 @@ export class UsuariosComponent implements OnInit {
     this.cargarUsuarios();
   }
 
+  mostrarModal(titulo: string, mensaje: string, tipo: 'success' | 'error' | 'warning' | 'info' = 'info', onConfirm?: () => void, mostrarCancelar = true) {
+    this.modalTitulo = titulo;
+    this.modalMensaje = mensaje;
+    this.modalTipo = tipo;
+    this.modalAccionConfirmar = onConfirm || (() => this.cerrarModal());
+    this.modalMostrarCancelar = mostrarCancelar;
+    this.modalVisible = true;
+  }
+
+  cerrarModal() {
+    this.modalVisible = false;
+  }
+
+  onModalConfirmado() {
+    if (this.modalAccionConfirmar) {
+      this.modalAccionConfirmar();
+    }
+    this.cerrarModal();
+  }
+
+  onModalCancelado() {
+    this.cerrarModal();
+  }
+
   cargarUsuarios() {
+    console.log('Cargando usuarios...');
     this.usuariosService.getUsuarios().subscribe({
       next: (res) => {
+        console.log('Respuesta usuarios:', res);
         if (res.status === 'ok') {
           this.usuarios = res.data;
         }
       },
-      error: () => {
-        this.router.navigate(['/login']);
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+        this.mostrarModal('Error', 'Error al cargar usuarios', 'error');
       }
     });
   }
 
+  validarCampos(usuario: any, esCreacion: boolean = true): boolean {
+    if (!usuario.Nombre || usuario.Nombre.trim() === '') {
+      this.mostrarModal('Campos incompletos', 'El nombre es obligatorio.', 'warning');
+      return false;
+    }
+    if (!usuario.Apellido || usuario.Apellido.trim() === '') {
+      this.mostrarModal('Campos incompletos', 'El apellido es obligatorio.', 'warning');
+      return false;
+    }
+    if (!usuario.Correo || usuario.Correo.trim() === '') {
+      this.mostrarModal('Campos incompletos', 'El correo es obligatorio.', 'warning');
+      return false;
+    }
+    if (!usuario.Edad || usuario.Edad <= 0) {
+      this.mostrarModal('Campos inválidos', 'La edad debe ser mayor a 0.', 'warning');
+      return false;
+    }
+    if (esCreacion && (!usuario.Password || usuario.Password.trim() === '')) {
+      this.mostrarModal('Campos incompletos', 'La contraseña es obligatoria.', 'warning');
+      return false;
+    }
+    return true;
+  }
+
   crearUsuario() {
-    if (!this.nuevoUsuario.Nombre || !this.nuevoUsuario.Apellido || !this.nuevoUsuario.Correo || !this.nuevoUsuario.Password || !this.nuevoUsuario.Edad) {
-      alert('Todos los campos son obligatorios.');
-      return;
-    }
+    if (!this.validarCampos(this.nuevoUsuario, true)) return;
 
-    if (this.nuevoUsuario.Edad < 0) {
-      alert('La edad no puede ser negativa.');
-      return;
-    }
-
+    console.log('Creando usuario:', this.nuevoUsuario);
     this.usuariosService.crearUsuario(this.nuevoUsuario).subscribe({
       next: (res) => {
+        console.log('Respuesta crear:', res);
         if (res.status === 'ok') {
-          this.cargarUsuarios();
-          this.nuevoUsuario = { Nombre: '', Apellido: '', Correo: '', Password: '', Edad: '' };
+          this.mostrarModal('Éxito', 'Usuario creado correctamente', 'success', () => {
+            this.cargarUsuarios();
+            this.nuevoUsuario = { Nombre: '', Apellido: '', Correo: '', Password: '', Edad: '' };
+          }, false);
         } else {
-          alert(res.message);
+          this.mostrarModal('Error', res.message, 'error');
         }
       },
-      error: () => {
-        alert('Error al crear usuario.');
+      error: (err) => {
+        console.error('Error crear:', err);
+        this.mostrarModal('Error', 'Error al crear usuario', 'error');
       }
     });
   }
@@ -77,28 +134,27 @@ export class UsuariosComponent implements OnInit {
   }
 
   guardarEdicion() {
-    if (!this.editandoUsuario.Nombre || !this.editandoUsuario.Apellido || !this.editandoUsuario.Correo || !this.editandoUsuario.Edad) {
-      alert('Nombre, Apellido, Correo y Edad son obligatorios.');
-      return;
-    }
+    if (!this.validarCampos(this.editandoUsuario, false)) return;
 
     // Si el password está vacío, no lo enviamos
     const datosEnviar = { ...this.editandoUsuario };
-    if (!datosEnviar.Password) {
+    if (!datosEnviar.Password || datosEnviar.Password.trim() === '') {
       delete datosEnviar.Password;
     }
 
     this.usuariosService.editarUsuario(this.editandoUsuario.Id_Usuario, datosEnviar).subscribe({
       next: (res) => {
         if (res.status === 'ok') {
-          this.cargarUsuarios();
-          this.editandoUsuario = null;
+          this.mostrarModal('Éxito', 'Usuario actualizado correctamente', 'success', () => {
+            this.cargarUsuarios();
+            this.editandoUsuario = null;
+          }, false);
         } else {
-          alert(res.message);
+          this.mostrarModal('Error', res.message, 'error');
         }
       },
       error: () => {
-        alert('Error al editar usuario.');
+        this.mostrarModal('Error', 'Error al editar usuario', 'error');
       }
     });
   }
@@ -107,21 +163,27 @@ export class UsuariosComponent implements OnInit {
     this.editandoUsuario = null;
   }
 
+  confirmarEliminar(id: number) {
+    this.mostrarModal('Confirmar eliminación', '¿Estás seguro de que quieres eliminar este usuario?', 'warning', () => {
+      this.eliminarUsuario(id);
+    }, true);
+  }
+
   eliminarUsuario(id: number) {
-    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-      this.usuariosService.eliminarUsuario(id).subscribe({
-        next: (res) => {
-          if (res.status === 'ok') {
+    this.usuariosService.eliminarUsuario(id).subscribe({
+      next: (res) => {
+        if (res.status === 'ok') {
+          this.mostrarModal('Éxito', 'Usuario eliminado correctamente', 'success', () => {
             this.cargarUsuarios();
-          } else {
-            alert(res.message);
-          }
-        },
-        error: () => {
-          alert('Error al eliminar usuario.');
+          }, false);
+        } else {
+          this.mostrarModal('Error', res.message, 'error');
         }
-      });
-    }
+      },
+      error: () => {
+        this.mostrarModal('Error', 'Error al eliminar usuario', 'error');
+      }
+    });
   }
 
   toggleEstado(usuario: any) {
@@ -130,12 +192,13 @@ export class UsuariosComponent implements OnInit {
       next: (res) => {
         if (res.status === 'ok') {
           usuario.Estado = nuevoEstado;
+          this.mostrarModal('Éxito', `Usuario ${nuevoEstado === 1 ? 'activado' : 'desactivado'} correctamente`, 'success', undefined, false);
         } else {
-          alert(res.message);
+          this.mostrarModal('Error', res.message, 'error');
         }
       },
       error: () => {
-        alert('Error al cambiar estado del usuario.');
+        this.mostrarModal('Error', 'Error al cambiar estado del usuario', 'error');
       }
     });
   }

@@ -26,20 +26,14 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['correo']) || empty($data['password']) || empty($data['nombre']) || empty($data['apellido']) || !isset($data['edad'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos incompletos para el registro.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos incompletos para el registro.'], 400);
         }
 
         $correo = trim($data['correo']);
         $existingUser = $usuariosRepository->findOneBy(['correo' => $correo]);
 
         if ($existingUser !== null) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Ya existe una cuenta con ese correo.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Ya existe una cuenta con ese correo.'], 400);
         }
 
         $usuario = new Usuarios();
@@ -53,10 +47,7 @@ final class ApiController extends AbstractController
         $em->persist($usuario);
         $em->flush();
 
-        return $this->json([
-            'status' => 'ok',
-            'message' => 'Usuario registrado correctamente.'
-        ]);
+        return $this->json(['status' => 'ok', 'message' => 'Usuario registrado correctamente.']);
     }
 
     #[Route('/api/login', methods: ['POST'])]
@@ -65,10 +56,7 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['correo']) || empty($data['password'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Correo y contraseña son obligatorios.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Correo y contraseña son obligatorios.'], 400);
         }
 
         $usuario = $usuariosRepository->findOneBy([
@@ -77,21 +65,18 @@ final class ApiController extends AbstractController
         ]);
 
         if ($usuario === null || !password_verify(trim($data['password']), $usuario->getPassword())) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Credenciales invalidas o usuario inactivo.'
-            ], 401);
+            return $this->json(['status' => 'error', 'message' => 'Credenciales invalidas o usuario inactivo.'], 401);
         }
 
         return $this->json([
             'status' => 'ok',
             'usuario' => [
-                'id' => $usuario->getId(),
-                'nombre' => $usuario->getNombre(),
+                'id'       => $usuario->getId(),
+                'nombre'   => $usuario->getNombre(),
                 'apellido' => $usuario->getApellido(),
-                'correo' => $usuario->getCorreo(),
-                'edad' => $usuario->getEdad(),
-                'estado' => $usuario->getEstado(),
+                'correo'   => $usuario->getCorreo(),
+                'edad'     => $usuario->getEdad(),
+                'estado'   => $usuario->getEstado(),
             ],
         ]);
     }
@@ -103,17 +88,14 @@ final class ApiController extends AbstractController
     {
         $productos = array_map(static function ($producto) {
             return [
-                'id' => $producto->getId(),
-                'nombre' => $producto->getNombre(),
-                'precio' => $producto->getPrecio(),
+                'id'          => $producto->getId(),
+                'nombre'      => $producto->getNombre(),
+                'precio'      => $producto->getPrecio(),
                 'descripcion' => $producto->getDescripcion(),
             ];
         }, $productosRepository->findAll());
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $productos,
-        ]);
+        return $this->json(['status' => 'ok', 'data' => $productos]);
     }
 
     #[Route('/api/productos', methods: ['POST'])]
@@ -122,10 +104,7 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['nombre']) || empty($data['precio']) || empty($data['descripcion'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos incompletos para crear el producto.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos incompletos para crear el producto.'], 400);
         }
 
         $producto = new Productos();
@@ -136,13 +115,20 @@ final class ApiController extends AbstractController
         $em->persist($producto);
         $em->flush();
 
+        // ✅ Crear inventario automáticamente con stock 0
+        $inventario = new Inventario();
+        $inventario->setProducto($producto);
+        $inventario->setStock(0);
+        $em->persist($inventario);
+        $em->flush();
+
         return $this->json([
-            'status' => 'ok',
-            'message' => 'Producto creado correctamente.',
+            'status'   => 'ok',
+            'message'  => 'Producto creado correctamente.',
             'producto' => [
-                'id' => $producto->getId(),
-                'nombre' => $producto->getNombre(),
-                'precio' => $producto->getPrecio(),
+                'id'          => $producto->getId(),
+                'nombre'      => $producto->getNombre(),
+                'precio'      => $producto->getPrecio(),
                 'descripcion' => $producto->getDescripcion(),
             ]
         ]);
@@ -153,40 +139,27 @@ final class ApiController extends AbstractController
     {
         $producto = $productosRepository->find($id);
         if (!$producto) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Producto no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Producto no encontrado.'], 404);
         }
 
         $data = json_decode($request->getContent(), true);
-
         if (!is_array($data)) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos inválidos.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos inválidos.'], 400);
         }
 
-        if (isset($data['nombre'])) {
-            $producto->setNombre(trim($data['nombre']));
-        }
-        if (isset($data['precio'])) {
-            $producto->setPrecio(trim($data['precio']));
-        }
-        if (isset($data['descripcion'])) {
-            $producto->setDescripcion(trim($data['descripcion']));
-        }
+        if (isset($data['nombre']))      $producto->setNombre(trim($data['nombre']));
+        if (isset($data['precio']))      $producto->setPrecio(trim($data['precio']));
+        if (isset($data['descripcion'])) $producto->setDescripcion(trim($data['descripcion']));
 
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
-            'message' => 'Producto actualizado correctamente.',
+            'status'   => 'ok',
+            'message'  => 'Producto actualizado correctamente.',
             'producto' => [
-                'id' => $producto->getId(),
-                'nombre' => $producto->getNombre(),
-                'precio' => $producto->getPrecio(),
+                'id'          => $producto->getId(),
+                'nombre'      => $producto->getNombre(),
+                'precio'      => $producto->getPrecio(),
                 'descripcion' => $producto->getDescripcion(),
             ]
         ]);
@@ -197,37 +170,24 @@ final class ApiController extends AbstractController
     {
         $producto = $productosRepository->find($id);
         if (!$producto) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Producto no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Producto no encontrado.'], 404);
         }
 
         try {
             $connection = $em->getConnection();
             $connection->beginTransaction();
-            
             $connection->executeStatement('DELETE FROM [Detalle_Orden] WHERE [Id_Producto] = ?', [$id]);
             $connection->executeStatement('DELETE FROM [Inventario] WHERE [Id_Producto] = ?', [$id]);
-            
             $em->remove($producto);
             $em->flush();
-            
             $connection->commit();
 
-            return $this->json([
-                'status' => 'ok',
-                'message' => 'Producto eliminado correctamente.'
-            ]);
+            return $this->json(['status' => 'ok', 'message' => 'Producto eliminado correctamente.']);
         } catch (\Exception $e) {
             if (isset($connection) && $connection->isTransactionActive()) {
                 $connection->rollBack();
             }
-            
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Error al eliminar: ' . $e->getMessage()
-            ], 500);
+            return $this->json(['status' => 'error', 'message' => 'Error al eliminar: ' . $e->getMessage()], 500);
         }
     }
 
@@ -236,18 +196,20 @@ final class ApiController extends AbstractController
     #[Route('/api/inventario', methods: ['GET'])]
     public function inventario(InventarioRepository $inventarioRepository): JsonResponse
     {
-        $inventario = array_map(static function ($item) {
-            return [
-                'Id_Inventario' => $item->getIdInventario(),
-                'Id_Producto' => $item->getIdProducto(),
-                'Stock' => $item->getStock(),
-            ];
-        }, $inventarioRepository->findAll());
+        try {
+            $inventario = array_map(static function ($item) {
+                return [
+                    'Id_Inventario' => $item->getId(),
+                    'Id_Producto'   => $item->getProducto()?->getId(), // ✅ desde la relación
+                    'Stock'         => $item->getStock(),
+                ];
+            }, $inventarioRepository->findAll());
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $inventario,
-        ]);
+            return $this->json(['status' => 'ok', 'data' => $inventario]);
+
+        } catch (\Exception $e) {
+            return $this->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     #[Route('/api/inventario', methods: ['POST'])]
@@ -256,61 +218,54 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['Id_Producto']) || !isset($data['Stock'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos incompletos: se requiere Id_Producto y Stock.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos incompletos: se requiere Id_Producto y Stock.'], 400);
         }
 
         $producto = $productosRepository->find($data['Id_Producto']);
         if (!$producto) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'El producto especificado no existe.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'El producto especificado no existe.'], 404);
         }
 
         $inventario = new Inventario();
-        $inventario->setIdProducto((int) $data['Id_Producto']);
+        $inventario->setProducto($producto); // ✅ setProducto(), no setIdProducto()
         $inventario->setStock((int) $data['Stock']);
 
         $em->persist($inventario);
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Registro de inventario creado correctamente.',
-            'data' => [
-                'Id_Inventario' => $inventario->getIdInventario(),
-                'Id_Producto' => $inventario->getIdProducto(),
-                'Stock' => $inventario->getStock(),
+            'data'    => [
+                'Id_Inventario' => $inventario->getId(),
+                'Id_Producto'   => $inventario->getProducto()?->getId(),
+                'Stock'         => $inventario->getStock(),
             ]
         ]);
     }
 
     #[Route('/api/inventario/{id}', methods: ['PUT'])]
-    public function editarInventario(int $id, Request $request, EntityManagerInterface $em, InventarioRepository $inventarioRepository): JsonResponse
+    public function editarInventario(int $id, Request $request, EntityManagerInterface $em, InventarioRepository $inventarioRepository, ProductosRepository $productosRepository): JsonResponse
     {
         $inventario = $inventarioRepository->find($id);
         if (!$inventario) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Registro de inventario no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Registro de inventario no encontrado.'], 404);
         }
 
         $data = json_decode($request->getContent(), true);
-
         if (!is_array($data)) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos inválidos.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos inválidos.'], 400);
         }
 
+        // ✅ Buscar el objeto Producto, no asignar ID directo
         if (isset($data['Id_Producto'])) {
-            $inventario->setIdProducto((int) $data['Id_Producto']);
+            $producto = $productosRepository->find((int) $data['Id_Producto']);
+            if (!$producto) {
+                return $this->json(['status' => 'error', 'message' => 'Producto no encontrado.'], 404);
+            }
+            $inventario->setProducto($producto);
         }
+
         if (isset($data['Stock'])) {
             $inventario->setStock((int) $data['Stock']);
         }
@@ -318,12 +273,12 @@ final class ApiController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Registro de inventario actualizado correctamente.',
-            'data' => [
-                'Id_Inventario' => $inventario->getIdInventario(),
-                'Id_Producto' => $inventario->getIdProducto(),
-                'Stock' => $inventario->getStock(),
+            'data'    => [
+                'Id_Inventario' => $inventario->getId(),
+                'Id_Producto'   => $inventario->getProducto()?->getId(),
+                'Stock'         => $inventario->getStock(),
             ]
         ]);
     }
@@ -333,19 +288,13 @@ final class ApiController extends AbstractController
     {
         $inventario = $inventarioRepository->find($id);
         if (!$inventario) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Registro de inventario no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Registro de inventario no encontrado.'], 404);
         }
 
         $em->remove($inventario);
         $em->flush();
 
-        return $this->json([
-            'status' => 'ok',
-            'message' => 'Registro de inventario eliminado correctamente.'
-        ]);
+        return $this->json(['status' => 'ok', 'message' => 'Registro de inventario eliminado correctamente.']);
     }
 
     // ============ USUARIOS ============
@@ -356,18 +305,15 @@ final class ApiController extends AbstractController
         $usuarios = array_map(static function ($usuario) {
             return [
                 'Id_Usuario' => $usuario->getId(),
-                'Nombre' => $usuario->getNombre(),
-                'Apellido' => $usuario->getApellido(),
-                'Correo' => $usuario->getCorreo(),
-                'Edad' => $usuario->getEdad(),
-                'Estado' => $usuario->getEstado(),
+                'Nombre'     => $usuario->getNombre(),
+                'Apellido'   => $usuario->getApellido(),
+                'Correo'     => $usuario->getCorreo(),
+                'Edad'       => $usuario->getEdad(),
+                'Estado'     => $usuario->getEstado(),
             ];
         }, $usuariosRepository->findAll());
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $usuarios,
-        ]);
+        return $this->json(['status' => 'ok', 'data' => $usuarios]);
     }
 
     #[Route('/api/usuarios/todos', methods: ['GET'])]
@@ -376,18 +322,15 @@ final class ApiController extends AbstractController
         $usuarios = array_map(static function ($usuario) {
             return [
                 'Id_Usuario' => $usuario->getId(),
-                'Nombre' => $usuario->getNombre(),
-                'Apellido' => $usuario->getApellido(),
-                'Correo' => $usuario->getCorreo(),
-                'Edad' => $usuario->getEdad(),
-                'Estado' => $usuario->getEstado(),
+                'Nombre'     => $usuario->getNombre(),
+                'Apellido'   => $usuario->getApellido(),
+                'Correo'     => $usuario->getCorreo(),
+                'Edad'       => $usuario->getEdad(),
+                'Estado'     => $usuario->getEstado(),
             ];
         }, $usuariosRepository->findAll());
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $usuarios,
-        ]);
+        return $this->json(['status' => 'ok', 'data' => $usuarios]);
     }
 
     #[Route('/api/usuarios/{id}', methods: ['GET'])]
@@ -395,21 +338,18 @@ final class ApiController extends AbstractController
     {
         $usuario = $usuariosRepository->find($id);
         if (!$usuario) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Usuario no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Usuario no encontrado.'], 404);
         }
 
         return $this->json([
             'status' => 'ok',
-            'data' => [
+            'data'   => [
                 'Id_Usuario' => $usuario->getId(),
-                'Nombre' => $usuario->getNombre(),
-                'Apellido' => $usuario->getApellido(),
-                'Correo' => $usuario->getCorreo(),
-                'Edad' => $usuario->getEdad(),
-                'Estado' => $usuario->getEstado(),
+                'Nombre'     => $usuario->getNombre(),
+                'Apellido'   => $usuario->getApellido(),
+                'Correo'     => $usuario->getCorreo(),
+                'Edad'       => $usuario->getEdad(),
+                'Estado'     => $usuario->getEstado(),
             ]
         ]);
     }
@@ -420,10 +360,7 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['Nombre']) || empty($data['Apellido']) || empty($data['Correo']) || empty($data['Password']) || !isset($data['Edad'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos incompletos: Nombre, Apellido, Correo, Password y Edad son requeridos.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos incompletos.'], 400);
         }
 
         $usuario = new Usuarios();
@@ -438,15 +375,15 @@ final class ApiController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Usuario creado correctamente.',
-            'data' => [
+            'data'    => [
                 'Id_Usuario' => $usuario->getId(),
-                'Nombre' => $usuario->getNombre(),
-                'Apellido' => $usuario->getApellido(),
-                'Correo' => $usuario->getCorreo(),
-                'Edad' => $usuario->getEdad(),
-                'Estado' => $usuario->getEstado(),
+                'Nombre'     => $usuario->getNombre(),
+                'Apellido'   => $usuario->getApellido(),
+                'Correo'     => $usuario->getCorreo(),
+                'Edad'       => $usuario->getEdad(),
+                'Estado'     => $usuario->getEstado(),
             ]
         ]);
     }
@@ -456,52 +393,33 @@ final class ApiController extends AbstractController
     {
         $usuario = $usuariosRepository->find($id);
         if (!$usuario) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Usuario no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Usuario no encontrado.'], 404);
         }
 
         $data = json_decode($request->getContent(), true);
-
         if (!is_array($data)) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos inválidos.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos inválidos.'], 400);
         }
 
-        if (isset($data['Nombre'])) {
-            $usuario->setNombre($data['Nombre']);
-        }
-        if (isset($data['Apellido'])) {
-            $usuario->setApellido($data['Apellido']);
-        }
-        if (isset($data['Correo'])) {
-            $usuario->setCorreo($data['Correo']);
-        }
-        if (isset($data['Password']) && !empty($data['Password'])) {
-            $usuario->setPassword(md5($data['Password']));
-        }
-        if (isset($data['Edad'])) {
-            $usuario->setEdad((int) $data['Edad']);
-        }
-        if (isset($data['Estado'])) {
-            $usuario->setEstado((bool) $data['Estado']);
-        }
+        if (isset($data['Nombre']))    $usuario->setNombre($data['Nombre']);
+        if (isset($data['Apellido']))  $usuario->setApellido($data['Apellido']);
+        if (isset($data['Correo']))    $usuario->setCorreo($data['Correo']);
+        if (isset($data['Password']) && !empty($data['Password'])) $usuario->setPassword(md5($data['Password']));
+        if (isset($data['Edad']))      $usuario->setEdad((int) $data['Edad']);
+        if (isset($data['Estado']))    $usuario->setEstado((bool) $data['Estado']);
 
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Usuario actualizado correctamente.',
-            'data' => [
+            'data'    => [
                 'Id_Usuario' => $usuario->getId(),
-                'Nombre' => $usuario->getNombre(),
-                'Apellido' => $usuario->getApellido(),
-                'Correo' => $usuario->getCorreo(),
-                'Edad' => $usuario->getEdad(),
-                'Estado' => $usuario->getEstado(),
+                'Nombre'     => $usuario->getNombre(),
+                'Apellido'   => $usuario->getApellido(),
+                'Correo'     => $usuario->getCorreo(),
+                'Edad'       => $usuario->getEdad(),
+                'Estado'     => $usuario->getEstado(),
             ]
         ]);
     }
@@ -511,19 +429,13 @@ final class ApiController extends AbstractController
     {
         $usuario = $usuariosRepository->find($id);
         if (!$usuario) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Usuario no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Usuario no encontrado.'], 404);
         }
 
         $em->remove($usuario);
         $em->flush();
 
-        return $this->json([
-            'status' => 'ok',
-            'message' => 'Usuario eliminado correctamente.'
-        ]);
+        return $this->json(['status' => 'ok', 'message' => 'Usuario eliminado correctamente.']);
     }
 
     // ============ ORDENES ============
@@ -533,17 +445,14 @@ final class ApiController extends AbstractController
     {
         $ordenes = array_map(static function ($orden) {
             return [
-                'Id_Orden' => $orden->getId(),
-                'Estado' => $orden->getEstado(),
-                'Fecha' => $orden->getFecha()->format('Y-m-d'),
+                'Id_Orden'   => $orden->getId(),
+                'Estado'     => $orden->getEstado(),
+                'Fecha'      => $orden->getFecha()->format('Y-m-d'),
                 'Id_Usuario' => $orden->getIdUsuario()->getId(),
             ];
         }, $ordenesRepository->findAll());
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $ordenes,
-        ]);
+        return $this->json(['status' => 'ok', 'data' => $ordenes]);
     }
 
     #[Route('/api/ordenes', methods: ['POST'])]
@@ -552,18 +461,12 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['Estado']) || empty($data['Fecha']) || empty($data['Id_Usuario'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos incompletos: se requiere Estado, Fecha e Id_Usuario.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos incompletos: se requiere Estado, Fecha e Id_Usuario.'], 400);
         }
 
         $usuario = $usuariosRepository->find($data['Id_Usuario']);
         if (!$usuario) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'El usuario especificado no existe.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'El usuario especificado no existe.'], 404);
         }
 
         $orden = new Ordenes();
@@ -575,12 +478,12 @@ final class ApiController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Orden creada correctamente.',
-            'data' => [
-                'Id_Orden' => $orden->getIdOrden(),
-                'Estado' => $orden->getEstado(),
-                'Fecha' => $orden->getFecha()->format('Y-m-d'),
+            'data'    => [
+                'Id_Orden'   => $orden->getIdOrden(),
+                'Estado'     => $orden->getEstado(),
+                'Fecha'      => $orden->getFecha()->format('Y-m-d'),
                 'Id_Usuario' => $orden->getIdUsuario(),
             ]
         ]);
@@ -591,40 +494,27 @@ final class ApiController extends AbstractController
     {
         $orden = $ordenesRepository->find($id);
         if (!$orden) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Orden no encontrada.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Orden no encontrada.'], 404);
         }
 
         $data = json_decode($request->getContent(), true);
-
         if (!is_array($data)) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos inválidos.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos inválidos.'], 400);
         }
 
-        if (isset($data['Estado'])) {
-            $orden->setEstado($data['Estado']);
-        }
-        if (isset($data['Fecha'])) {
-            $orden->setFecha(new \DateTime($data['Fecha']));
-        }
-        if (isset($data['Id_Usuario'])) {
-            $orden->setIdUsuario((int) $data['Id_Usuario']);
-        }
+        if (isset($data['Estado']))     $orden->setEstado($data['Estado']);
+        if (isset($data['Fecha']))      $orden->setFecha(new \DateTime($data['Fecha']));
+        if (isset($data['Id_Usuario'])) $orden->setIdUsuario((int) $data['Id_Usuario']);
 
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Orden actualizada correctamente.',
-            'data' => [
-                'Id_Orden' => $orden->getIdOrden(),
-                'Estado' => $orden->getEstado(),
-                'Fecha' => $orden->getFecha()->format('Y-m-d'),
+            'data'    => [
+                'Id_Orden'   => $orden->getIdOrden(),
+                'Estado'     => $orden->getEstado(),
+                'Fecha'      => $orden->getFecha()->format('Y-m-d'),
                 'Id_Usuario' => $orden->getIdUsuario(),
             ]
         ]);
@@ -635,19 +525,13 @@ final class ApiController extends AbstractController
     {
         $orden = $ordenesRepository->find($id);
         if (!$orden) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Orden no encontrada.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Orden no encontrada.'], 404);
         }
 
         $em->remove($orden);
         $em->flush();
 
-        return $this->json([
-            'status' => 'ok',
-            'message' => 'Orden eliminada correctamente.'
-        ]);
+        return $this->json(['status' => 'ok', 'message' => 'Orden eliminada correctamente.']);
     }
 
     // ============ DETALLE_ORDEN ============
@@ -657,18 +541,15 @@ final class ApiController extends AbstractController
     {
         $detalles = array_map(static function ($detalle) {
             return [
-                'Id_Detalle' => $detalle->getId(),
-                'Cantidad' => $detalle->getCantidad(),
-                'Precio' => $detalle->getPrecio(),
-                'Id_Orden' => $detalle->getIdOrden(),
-                'Id_Producto' => $detalle->getIdProducto(),
+                'Id_Detalle'  => $detalle->getId(),
+                'Cantidad'    => $detalle->getCantidad(),
+                'Precio'      => $detalle->getPrecio(),
+                'Id_Orden'    => $detalle->getOrden()?->getId(),
+                'Id_Producto' => $detalle->getProducto()?->getId(),
             ];
         }, $detalleOrdenRepository->findAll());
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => $detalles,
-        ]);
+        return $this->json(['status' => 'ok', 'data' => $detalles]);
     }
 
     #[Route('/api/detalle-orden', methods: ['POST'])]
@@ -677,94 +558,80 @@ final class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!is_array($data) || empty($data['Cantidad']) || empty($data['Precio']) || empty($data['Id_Orden']) || empty($data['Id_Producto'])) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos incompletos: se requiere Cantidad, Precio, Id_Orden e Id_Producto.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos incompletos.'], 400);
         }
 
         $orden = $ordenesRepository->find($data['Id_Orden']);
         if (!$orden) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'La orden especificada no existe.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'La orden especificada no existe.'], 404);
         }
 
         $producto = $productosRepository->find($data['Id_Producto']);
         if (!$producto) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'El producto especificado no existe.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'El producto especificado no existe.'], 404);
         }
 
         $detalle = new DetalleOrden();
         $detalle->setCantidad((int) $data['Cantidad']);
         $detalle->setPrecio((float) $data['Precio']);
-        $detalle->setIdOrden((int) $data['Id_Orden']);
-        $detalle->setIdProducto((int) $data['Id_Producto']);
+        $detalle->setOrden($orden);
+        $detalle->setProducto($producto);
 
         $em->persist($detalle);
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Detalle de orden creado correctamente.',
-            'data' => [
-                'Id_Detalle' => $detalle->getIdDetalle(),
-                'Cantidad' => $detalle->getCantidad(),
-                'Precio' => $detalle->getPrecio(),
-                'Id_Orden' => $detalle->getIdOrden(),
-                'Id_Producto' => $detalle->getIdProducto(),
+            'data'    => [
+                'Id_Detalle'  => $detalle->getId(),
+                'Cantidad'    => $detalle->getCantidad(),
+                'Precio'      => $detalle->getPrecio(),
+                'Id_Orden'    => $detalle->getOrden()?->getId(),
+                'Id_Producto' => $detalle->getProducto()?->getId(),
             ]
         ]);
     }
 
     #[Route('/api/detalle-orden/{id}', methods: ['PUT'])]
-    public function editarDetalleOrden(int $id, Request $request, EntityManagerInterface $em, DetalleOrdenRepository $detalleOrdenRepository): JsonResponse
+    public function editarDetalleOrden(int $id, Request $request, EntityManagerInterface $em, DetalleOrdenRepository $detalleOrdenRepository, OrdenesRepository $ordenesRepository, ProductosRepository $productosRepository): JsonResponse
     {
         $detalle = $detalleOrdenRepository->find($id);
         if (!$detalle) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Detalle de orden no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Detalle de orden no encontrado.'], 404);
         }
 
         $data = json_decode($request->getContent(), true);
-
         if (!is_array($data)) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Datos inválidos.'
-            ], 400);
+            return $this->json(['status' => 'error', 'message' => 'Datos inválidos.'], 400);
         }
 
-        if (isset($data['Cantidad'])) {
-            $detalle->setCantidad((int) $data['Cantidad']);
-        }
-        if (isset($data['Precio'])) {
-            $detalle->setPrecio((float) $data['Precio']);
-        }
+        if (isset($data['Cantidad'])) $detalle->setCantidad((int) $data['Cantidad']);
+        if (isset($data['Precio']))   $detalle->setPrecio((string) $data['Precio']);
+
         if (isset($data['Id_Orden'])) {
-            $detalle->setIdOrden((int) $data['Id_Orden']);
+            $orden = $ordenesRepository->find((int) $data['Id_Orden']);
+            if (!$orden) return $this->json(['status' => 'error', 'message' => 'Orden no encontrada.'], 404);
+            $detalle->setOrden($orden);
         }
+
         if (isset($data['Id_Producto'])) {
-            $detalle->setIdProducto((int) $data['Id_Producto']);
+            $producto = $productosRepository->find((int) $data['Id_Producto']);
+            if (!$producto) return $this->json(['status' => 'error', 'message' => 'Producto no encontrado.'], 404);
+            $detalle->setProducto($producto);
         }
 
         $em->flush();
 
         return $this->json([
-            'status' => 'ok',
+            'status'  => 'ok',
             'message' => 'Detalle de orden actualizado correctamente.',
-            'data' => [
-                'Id_Detalle' => $detalle->getIdDetalle(),
-                'Cantidad' => $detalle->getCantidad(),
-                'Precio' => $detalle->getPrecio(),
-                'Id_Orden' => $detalle->getIdOrden(),
-                'Id_Producto' => $detalle->getIdProducto(),
+            'data'    => [
+                'Id_Detalle'  => $detalle->getId(),
+                'Cantidad'    => $detalle->getCantidad(),
+                'Precio'      => $detalle->getPrecio(),
+                'Id_Orden'    => $detalle->getOrden()?->getId(),
+                'Id_Producto' => $detalle->getProducto()?->getId(),
             ]
         ]);
     }
@@ -774,18 +641,12 @@ final class ApiController extends AbstractController
     {
         $detalle = $detalleOrdenRepository->find($id);
         if (!$detalle) {
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Detalle de orden no encontrado.'
-            ], 404);
+            return $this->json(['status' => 'error', 'message' => 'Detalle de orden no encontrado.'], 404);
         }
 
         $em->remove($detalle);
         $em->flush();
 
-        return $this->json([
-            'status' => 'ok',
-            'message' => 'Detalle de orden eliminado correctamente.'
-        ]);
+        return $this->json(['status' => 'ok', 'message' => 'Detalle de orden eliminado correctamente.']);
     }
-}
+} // ✅ llave de cierre de la clase — solo una, al final

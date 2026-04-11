@@ -39,54 +39,50 @@
       </form>
     </div>
 
-    <!-- Formulario para editar detalle -->
+    <!-- Formulario para editar -->
     <div *ngIf="editandoDetalle" class="form-container form-editar">
       <h3>✏️ Editar Detalle de Orden</h3>
       <form (ngSubmit)="guardarEdicion()">
         <div class="form-row">
           <div class="campo">
             <select [(ngModel)]="editandoDetalle.Id_Orden" name="Id_Orden" required>
-              <option *ngFor="let o of ordenes" [value]="o.Id_Orden">
-                Orden #{{ o.Id_Orden }} - {{ o.Estado }}
-              </option>
+              <option *ngFor="let o of ordenes" [value]="o.Id_Orden">Orden #{{ o.Id_Orden }}</option>
             </select>
           </div>
           <div class="campo">
             <select [(ngModel)]="editandoDetalle.Id_Producto" name="Id_Producto" required>
-              <option *ngFor="let p of productos" [value]="p.id">
-                {{ p.nombre }} - ${{ p.precio }}
-              </option>
+              <option *ngFor="let p of productos" [value]="p.id">{{ p.nombre }}</option>
             </select>
           </div>
         </div>
         <div class="form-row">
           <div class="campo">
-            <input type="number" [(ngModel)]="editandoDetalle.Cantidad" name="Cantidad" placeholder="Cantidad" min="1" required>
+            <input type="number" [(ngModel)]="editandoDetalle.Cantidad" placeholder="Cantidad" min="1" required>
           </div>
           <div class="campo">
-            <input type="number" [(ngModel)]="editandoDetalle.Precio" name="Precio" placeholder="Precio unitario" step="0.01" min="0.01" required>
+            <input type="number" [(ngModel)]="editandoDetalle.Precio" placeholder="Precio" step="0.01" min="0.01" required>
           </div>
           <div class="campo subtotal">
             <label>Subtotal: ${{ calcularSubtotalEdicion() | number:'1.2-2' }}</label>
           </div>
         </div>
         <div class="botones-accion">
-          <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+          <button type="submit" class="btn-guardar">💾 Guardar</button>
           <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">❌ Cancelar</button>
         </div>
       </form>
     </div>
 
-    <!-- Tabla de detalles -->
+    <!-- Tabla -->
     <div class="tabla-wrapper">
       <table>
         <thead>
           <tr>
-            <th>ID Detalle</th>
+            <th>ID</th>
             <th>Orden</th>
             <th>Producto</th>
             <th>Cantidad</th>
-            <th>Precio Unitario</th>
+            <th>Precio</th>
             <th>Subtotal</th>
             <th>Acciones</th>
           </tr>
@@ -101,7 +97,7 @@
             <td class="subtotal-cell">${{ (detalle.Cantidad * detalle.Precio) | number:'1.2-2' }}</td>
             <td class="acciones">
               <button class="btn-editar" (click)="editarDetalle(detalle)">✏️ Editar</button>
-              <button class="btn-eliminar" (click)="eliminarDetalle(detalle.Id_Detalle)">🗑️ Eliminar</button>
+              <button class="btn-eliminar" (click)="confirmarEliminar(detalle.Id_Detalle)">🗑️ Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -115,3 +111,14 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  [mostrarCancelar]="modalMostrarCancelar"
+  (confirmado)="onModalConfirmado()"
+  (cancelado)="onModalCancelado()"
+></app-modal>

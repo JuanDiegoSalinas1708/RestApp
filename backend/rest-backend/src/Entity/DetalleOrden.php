@@ -38,6 +38,7 @@ class DetalleOrden
         return $this->cantidad;
     }
 
+
     public function setCantidad(int $cantidad): static
     {
         $this->cantidad = $cantidad;
