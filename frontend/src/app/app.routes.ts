@@ -8,11 +8,18 @@ import { OrdenesComponent } from './pages/ordenes/ordenes.component';
 import { DetalleOrdenComponent } from './pages/detalle-orden/detalle-orden.component';
 import { UsuariosComponent } from './pages/usuarios/usuarios.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { RecuperarComponent } from './pages/recuperar/recuperar.component';
+import { VerificarComponent } from './pages/verificar/verificar.component';
+import { RestablecerComponent } from './pages/restablecer/restablecer.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'registro', component: RegistroComponent },
+    { path: 'recuperar', component: RecuperarComponent },
+    { path: 'verificar/:token', component: VerificarComponent },
+    { path: 'restablecer/:token', component: RestablecerComponent },
     {
         path: 'home',
         component: HomeComponent,

@@ -1,37 +1,95 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-hero">
-      <div class="hero-content">
-        <h1>Bienvenido de nuevo</h1>
-        <p>Accede para gestionar tus datos y ver tu panel.</p>
+<div class="page-shell">
+  <div class="page-grid">
+    <section class="form-panel">
+      <div class="form-card">
+        <div class="form-header">
+          <div class="brand-mark"></div>
+          <div>
+            <p class="eyebrow">Bienvenido</p>
+            <h1>Inicia sesión</h1>
+          </div>
+        </div>
+
+        <p class="subtitle">Ingresa tu correo y contraseña para continuar.</p>
+
+        <form (ngSubmit)="onSubmit()" class="login-form">
+          <div class="input-group">
+            <label>Correo electrónico <span class="required">*</span></label>
+            <div class="input-icon">
+              <i class="bi bi-envelope-fill"></i>
+              <input
+                type="email"
+                [(ngModel)]="credenciales.correo"
+                name="correo"
+                placeholder="ejemplo@correo.com"
+                [disabled]="bloqueado"
+                required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Contraseña <span class="required">*</span></label>
+            <div class="input-icon">
+              <i class="bi bi-lock-fill"></i>
+              <input
+                type="password"
+                [(ngModel)]="credenciales.password"
+                name="password"
+                placeholder="••••••••"
+                [disabled]="bloqueado"
+                required>
+            </div>
+
+            <div class="blocked-message" *ngIf="bloqueado">
+              <i class="bi bi-clock-fill blocked-icon"></i>
+              <span class="blocked-text">Cuenta bloqueada. Espera {{ tiempoRestante }} segundos.</span>
+            </div>
+          </div>
+
+          <div class="options">
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="recordar" name="recordar" [disabled]="bloqueado">
+              <span>Recordarme</span>
+            </label>
+            <a routerLink="/recuperar" class="forgot-link">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="btn-login" [disabled]="cargando || bloqueado">
+            {{ cargando ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+          </button>
+        </form>
+
+        <div class="separator">
+          <span>O</span>
+        </div>
+
+
+
+        <p class="register-link">
+          ¿No tienes cuenta? <a routerLink="/registro">Regístrate aquí</a>
+        </p>
       </div>
-    </div>
+    </section>
 
-    <div class="login-form">
-      <h2>Iniciar Sesión</h2>
-
-      <div *ngIf="error" class="error">{{ error }}</div>
-
-      <div class="form-group">
-        <label>Correo</label>
-        <input type="email" [(ngModel)]="correo" placeholder="correo@ejemplo.com" />
+    <section class="hero-panel" aria-hidden="true">
+      <div class="hero-card">
+        <div class="hero-title">Datos y control en un solo lugar</div>
+        <div class="hero-text">Accede a tu panel seguro y visualiza tu información de manera rápida.</div>
+        <div class="hero-figures">
+          <span class="dot"></span>
+          <span class="bar"></span>
+          <span class="square"></span>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" [(ngModel)]="password" placeholder="••••••••" />
-      </div>
-
-      <div class="checkbox-group">
-        <label>
-          <input type="checkbox" [(ngModel)]="rememberMe" /> Recordarme
-        </label>
-        <a class="forgot-link" routerLink="/login">¿Olvidaste tu contraseña?</a>
-      </div>
-
-      <button type="button" (click)="login()">Iniciar Sesión</button>
-
-      <p class="register-text">¿No tienes cuenta? <a routerLink="/registro">Regístrate aquí</a></p>
-    </div>
+    </section>
   </div>
 </div>
+
+<!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  (confirmado)="onModalConfirmado()"
+></app-modal>

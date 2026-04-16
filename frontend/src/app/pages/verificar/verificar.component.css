@@ -1,0 +1,57 @@
+.verificar-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a6fbd 0%, #0f3a6b 100%);
+  padding: 20px;
+}
+
+.verificar-card {
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.logo-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.logo h2 {
+  font-size: 24px;
+  color: #1a6fbd;
+  margin: 0;
+}
+
+.logo h2 span {
+  color: #0f3a6b;
+  font-weight: 300;
+}
+
+.loading {
+  margin-top: 24px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e0e6ed;
+  border-top: 3px solid #1a6fbd;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading p {
+  color: #6b7a90;
+}

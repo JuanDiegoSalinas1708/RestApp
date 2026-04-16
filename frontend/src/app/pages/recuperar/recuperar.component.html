@@ -1,0 +1,57 @@
+<div class="recuperar-container">
+  <div class="recuperar-card">
+    <div class="logo">
+      <div class="logo-icon">🔐</div>
+      <h2>Recuperar acceso</h2>
+    </div>
+
+    <h1>Recuperar contraseña</h1>
+    <p class="subtitle">Ingresa tu correo y tu nueva contraseña</p>
+
+    <form (ngSubmit)="onSubmit()" class="recuperar-form">
+      <div class="input-group">
+        <label>Correo electrónico <span class="required">*</span></label>
+        <div class="input-icon">
+          <span class="icon">📧</span>
+          <input type="email" [(ngModel)]="correo" name="correo" placeholder="Ingresa tu correo electrónico" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Nueva contraseña <span class="required">*</span></label>
+        <div class="input-icon">
+          <span class="icon">🔒</span>
+          <input type="password" [(ngModel)]="nuevaPassword" name="nuevaPassword" placeholder="Ingresa tu nueva contraseña" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Confirmar contraseña <span class="required">*</span></label>
+        <div class="input-icon">
+          <span class="icon">🔒</span>
+          <input type="password" [(ngModel)]="confirmarPassword" name="confirmarPassword" placeholder="Confirma tu nueva contraseña" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-recuperar" [disabled]="cargando">
+        {{ cargando ? 'Actualizando...' : 'Actualizar contraseña' }}
+      </button>
+    </form>
+
+    <div class="separator">
+      <span>O</span>
+    </div>
+
+    <p class="login-link">
+      ¿Recordaste tu contraseña? <a routerLink="/login">Inicia sesión aquí</a>
+    </p>
+  </div>
+</div>
+
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  (confirmado)="onModalConfirmado()"
+></app-modal>

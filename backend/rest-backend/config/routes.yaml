@@ -1,132 +1,135 @@
-# ============ AUTENTICACIÓN ============
-
-api_login:
-    path: /api/login
-    controller: App\Controller\ApiController::login
+# ============ AUTH ============
+api_auth_registro:
+    path: /api/auth/registro
+    controller: App\Controller\AuthController::registro
     methods: [POST]
 
-api_registro:
-    path: /api/registro
-    controller: App\Controller\ApiController::registro
+api_auth_login:
+    path: /api/auth/login
+    controller: App\Controller\AuthController::login
+    methods: [POST]
+
+api_auth_verificar:
+    path: /api/auth/verificar/{token}
+    controller: App\Controller\AuthController::verificarEmail
+    methods: [GET]
+
+api_auth_recuperar:
+    path: /api/auth/recuperar
+    controller: App\Controller\AuthController::recuperarPassword
+    methods: [POST]
+
+api_auth_restablecer:
+    path: /api/auth/restablecer/{token}
+    controller: App\Controller\AuthController::restablecerPassword
     methods: [POST]
 
 # ============ PRODUCTOS ============
-
 api_productos_get:
     path: /api/productos
-    controller: App\Controller\ApiController::productos
+    controller: App\Controller\ProductosController::productos
     methods: [GET]
 
 api_productos_post:
     path: /api/productos
-    controller: App\Controller\ApiController::crearProducto
+    controller: App\Controller\ProductosController::crearProducto
     methods: [POST]
 
 api_productos_put:
     path: /api/productos/{id}
-    controller: App\Controller\ApiController::editarProducto
+    controller: App\Controller\ProductosController::editarProducto
     methods: [PUT]
 
 api_productos_delete:
     path: /api/productos/{id}
-    controller: App\Controller\ApiController::eliminarProducto
+    controller: App\Controller\ProductosController::eliminarProducto
     methods: [DELETE]
 
 # ============ INVENTARIO ============
-
 api_inventario_get:
     path: /api/inventario
-    controller: App\Controller\ApiController::inventario
+    controller: App\Controller\InventarioController::inventario
     methods: [GET]
 
 api_inventario_post:
     path: /api/inventario
-    controller: App\Controller\ApiController::crearInventario
+    controller: App\Controller\InventarioController::crearInventario
     methods: [POST]
 
 api_inventario_put:
     path: /api/inventario/{id}
-    controller: App\Controller\ApiController::editarInventario
+    controller: App\Controller\InventarioController::editarInventario
     methods: [PUT]
 
 api_inventario_delete:
     path: /api/inventario/{id}
-    controller: App\Controller\ApiController::eliminarInventario
+    controller: App\Controller\InventarioController::eliminarInventario
     methods: [DELETE]
 
 # ============ ORDENES ============
-
 api_ordenes_get:
     path: /api/ordenes
-    controller: App\Controller\ApiController::ordenes
+    controller: App\Controller\OrdenesController::ordenes
     methods: [GET]
 
 api_ordenes_post:
     path: /api/ordenes
-    controller: App\Controller\ApiController::crearOrden
+    controller: App\Controller\OrdenesController::crearOrden
     methods: [POST]
 
 api_ordenes_put:
     path: /api/ordenes/{id}
-    controller: App\Controller\ApiController::editarOrden
+    controller: App\Controller\OrdenesController::editarOrden
     methods: [PUT]
 
 api_ordenes_delete:
     path: /api/ordenes/{id}
-    controller: App\Controller\ApiController::eliminarOrden
+    controller: App\Controller\OrdenesController::eliminarOrden
     methods: [DELETE]
 
 # ============ DETALLE ORDEN ============
-
 api_detalle_orden_get:
     path: /api/detalle-orden
-    controller: App\Controller\ApiController::detalleOrden
+    controller: App\Controller\DetalleOrdenController::detalleOrden
     methods: [GET]
 
 api_detalle_orden_post:
     path: /api/detalle-orden
-    controller: App\Controller\ApiController::crearDetalleOrden
+    controller: App\Controller\DetalleOrdenController::crearDetalleOrden
     methods: [POST]
 
 api_detalle_orden_put:
     path: /api/detalle-orden/{id}
-    controller: App\Controller\ApiController::editarDetalleOrden
+    controller: App\Controller\DetalleOrdenController::editarDetalleOrden
     methods: [PUT]
 
 api_detalle_orden_delete:
     path: /api/detalle-orden/{id}
-    controller: App\Controller\ApiController::eliminarDetalleOrden
+    controller: App\Controller\DetalleOrdenController::eliminarDetalleOrden
     methods: [DELETE]
 
 # ============ USUARIOS ============
-
 api_usuarios_todos:
     path: /api/usuarios/todos
-    controller: App\Controller\ApiController::todosUsuarios
+    controller: App\Controller\UsuariosController::todosUsuarios
     methods: [GET]
 
 api_usuarios_get:
     path: /api/usuarios/{id}
-    controller: App\Controller\ApiController::getUsuario
+    controller: App\Controller\UsuariosController::getUsuario
     methods: [GET]
 
 api_usuarios_post:
     path: /api/usuarios
-    controller: App\Controller\ApiController::crearUsuario
+    controller: App\Controller\UsuariosController::crearUsuario
     methods: [POST]
 
 api_usuarios_put:
     path: /api/usuarios/{id}
-    controller: App\Controller\ApiController::editarUsuario
+    controller: App\Controller\UsuariosController::editarUsuario
     methods: [PUT]
 
 api_usuarios_delete:
     path: /api/usuarios/{id}
-    controller: App\Controller\ApiController::eliminarUsuario
+    controller: App\Controller\UsuariosController::eliminarUsuario
     methods: [DELETE]
-
-# ============ CONTROLLERS ============
-
-controllers:
-    resource: '../src/Controller/'
-    type: attribute

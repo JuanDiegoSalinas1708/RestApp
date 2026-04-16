@@ -5,6 +5,7 @@ import { ProductosService } from '../../services/productos.service';
 import { InventarioService } from '../../services/inventario.services';
 import { OrdenesService } from '../../services/ordenes.service';
 import { UsuariosService } from '../../services/usuarios.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,18 +20,18 @@ export class DashboardComponent implements OnInit {
   totalInventario: number = 0;
   totalOrdenes: number = 0;
   totalUsuarios: number = 0;
-  
+
   // Últimas órdenes
   ultimasOrdenes: any[] = [];
-  
+
   // Productos con bajo stock
   productosBajoStock: any[] = [];
-  
+
   // Estadísticas de órdenes por estado
   ordenesPendientes: number = 0;
   ordenesPagadas: number = 0;
   ordenesEnviadas: number = 0;
-  
+
   // Loading states
   cargando: boolean = true;
 
@@ -48,27 +49,36 @@ export class DashboardComponent implements OnInit {
 
   cargarDashboard() {
     this.cargando = true;
-    
-    // Cargar productos
-    this.productosService.getProductos().subscribe({
-      next: (res) => {
-        if (res.status === 'ok') {
-          this.totalProductos = res.data.length;
-        }
-      },
-      error: () => console.error('Error cargando productos')
-    });
 
-    // Cargar inventario
-    this.inventarioService.getInventario().subscribe({
-      next: (res) => {
-        if (res.status === 'ok') {
-          this.totalInventario = res.data.length;
-          // Filtrar productos con stock bajo (< 5)
-          this.productosBajoStock = res.data.filter((item: any) => item.Stock < 5);
+    // Cargar productos e inventario juntos con forkJoin para evitar condiciones de carrera
+    forkJoin({
+      productos: this.productosService.getProductos(),
+      inventario: this.inventarioService.getInventario()
+    }).subscribe({
+      next: ({ productos, inventario }) => {
+        // Productos
+        if (productos.status === 'ok') {
+          this.totalProductos = productos.data.length;
+        }
+
+        // Inventario + cruce con nombre de producto
+        if (inventario.status === 'ok') {
+          this.totalInventario = inventario.data.length;
+
+          this.productosBajoStock = inventario.data
+            .filter((item: any) => item.Stock < 5)
+            .map((item: any) => {
+              const producto = productos.data.find(
+                (p: any) => p.Id_Producto === item.Id_Producto
+              );
+              return {
+                ...item,
+                Nombre: producto?.Nombre || 'Sin nombre'
+              };
+            });
         }
       },
-      error: () => console.error('Error cargando inventario')
+      error: () => console.error('Error cargando productos o inventario')
     });
 
     // Cargar órdenes
@@ -77,8 +87,7 @@ export class DashboardComponent implements OnInit {
         if (res.status === 'ok') {
           this.totalOrdenes = res.data.length;
           this.ultimasOrdenes = res.data.slice(-5).reverse();
-          
-          // Contar por estado
+
           this.ordenesPendientes = res.data.filter((o: any) => o.Estado === 'Pendiente').length;
           this.ordenesPagadas = res.data.filter((o: any) => o.Estado === 'Pagado').length;
           this.ordenesEnviadas = res.data.filter((o: any) => o.Estado === 'Enviado').length;

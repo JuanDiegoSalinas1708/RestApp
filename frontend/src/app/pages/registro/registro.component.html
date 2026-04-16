@@ -1,46 +1,118 @@
-<div class="registro-container">
-  <div class="registro-card">
-    <div class="registro-hero">
-      <div class="hero-content">
-        <h1>Únete ahora</h1>
-        <p>Registra tu cuenta y accede al panel de administración.</p>
+<div class="page-shell">
+  <div class="page-grid">
+    <section class="form-panel">
+      <div class="form-card">
+        <div class="form-header">
+          <div class="brand-mark"></div>
+          <div>
+            <p class="eyebrow">Regístrate</p>
+            <h1>Crea tu cuenta</h1>
+          </div>
+        </div>
+
+        <p class="subtitle">Completa los datos para crear tu cuenta y acceder al panel.</p>
+
+        <form (ngSubmit)="onSubmit()" class="registro-form">
+          <div class="form-row">
+            <div class="input-group">
+              <label>Nombre<span class ="required">*</span></label>
+              <input type="text" [(ngModel)]="nuevoUsuario.nombre" name="nombre" placeholder="Tu nombre" required>
+            </div>
+          </div>
+
+          <div class="form-row" style="flex-wrap: nowrap;">
+            <div class="input-group" style="flex: 1; min-width: 0;">
+              <label>Apellido<span class ="required">*</span></label>
+              <input type="text" [(ngModel)]="nuevoUsuario.apellido" name="apellido" placeholder="Tu apellido" required>
+            </div>
+            <div class="input-group" style="flex: 1; min-width: 0;">
+              <label>Fecha de nacimiento <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="bi bi-calendar3"></i>
+                <input
+                  type="date"
+                  [(ngModel)]="nuevoUsuario.fechaNacimiento"
+                  name="fechaNacimiento"
+                  [max]="fechaMaxima"
+                  required>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Correo electrónico <span class="required">*</span></label>
+            <div class="input-icon">
+              <i class="bi bi-envelope-fill"></i>
+              <input type="email" [(ngModel)]="nuevoUsuario.correo" name="correo" placeholder="ejemplo@correo.com" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Contraseña <span class="required">*</span></label>
+            <div class="input-icon">
+              <i class="bi bi-lock-fill"></i>
+              <input
+                type="password"
+                [(ngModel)]="nuevoUsuario.password"
+                name="password"
+                placeholder="••••••••"
+                (input)="validarPassword(nuevoUsuario.password)"
+                required>
+            </div>
+
+            <div class="password-strength" *ngIf="nuevoUsuario.password.length > 0">
+              <div class="strength-bar" [style.width.%]="fortalezaPassword"></div>
+            </div>
+            <p class="strength-text" [class]="claseFortaleza" *ngIf="nuevoUsuario.password.length > 0">
+              {{ textoFortaleza }}
+            </p>
+          </div>
+
+          <div class="password-requirements" *ngIf="nuevoUsuario.password.length > 0">
+            <p class="requirements-title">La contraseña debe incluir:</p>
+            <ul>
+              <li [class.valid]="passwordRequerimientos.minLength" [class.invalid]="!passwordRequerimientos.minLength">8 caracteres</li>
+              <li [class.valid]="passwordRequerimientos.mayuscula" [class.invalid]="!passwordRequerimientos.mayuscula">Mayúscula</li>
+              <li [class.valid]="passwordRequerimientos.minuscula" [class.invalid]="!passwordRequerimientos.minuscula">Minúscula</li>
+              <li [class.valid]="passwordRequerimientos.numero" [class.invalid]="!passwordRequerimientos.numero">Número</li>
+              <li [class.valid]="passwordRequerimientos.especial" [class.invalid]="!passwordRequerimientos.especial">Símbolo</li>
+            </ul>
+          </div>
+          <button type="submit" class="btn-login" [disabled]="cargando">
+            {{ cargando ? 'Creando cuenta...' : 'Registrarme' }}
+          </button>
+        </form>
+
+        <div class="separator">
+          <span>O</span>
+        </div>
+
+
+        <p class="register-link">
+          ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a>
+        </p>
       </div>
-    </div>
+    </section>
 
-    <div class="registro-form">
-      <h2>Crear Cuenta</h2>
-
-      <div *ngIf="error" class="error">{{ error }}</div>
-      <div *ngIf="exito" class="exito">{{ exito }}</div>
-
-      <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="nombre" placeholder="Tu nombre" />
+    <section class="hero-panel" aria-hidden="true">
+      <div class="hero-card"> 
+        <div class="hero-title">Tu nueva cuenta en minutos</div>
+        <div class="hero-text">Disfruta de un acceso seguro y ordenado a tus datos con un diseño moderno y claro.</div>
+        <div class="hero-figures">
+          <span class="dot"></span>
+          <span class="bar"></span>
+          <span class="square"></span>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label>Apellido</label>
-        <input type="text" [(ngModel)]="apellido" placeholder="Tu apellido" />
-      </div>
-
-      <div class="form-group">
-        <label>Correo</label>
-        <input type="email" [(ngModel)]="correo" placeholder="correo@ejemplo.com" />
-      </div>
-
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" [(ngModel)]="password" placeholder="••••••••" />
-      </div>
-
-      <div class="form-group">
-        <label>Edad</label>
-        <input type="number" min="1" [(ngModel)]="edad" placeholder="25" />
-      </div>
-
-      <button type="button" (click)="registro()">Crear Cuenta</button>
-
-      <p class="register-text">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
-    </div>
+    </section>
   </div>
 </div>
+
+<!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  (confirmado)="onModalConfirmado()"
+></app-modal>

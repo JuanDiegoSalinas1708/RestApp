@@ -1,0 +1,19 @@
+<?php
+#[Route('/verify-email/{token}', name: 'app_verify_email')]
+public function verifyEmail(string $token, EntityManagerInterface $em): Response
+{
+    $user = $em->getRepository(User::class)->findOneBy(['verificationToken' => $token]);
+    
+    if (!$user || $user->getVerificationTokenExpiresAt() < new \DateTimeImmutable()) {
+        $this->addFlash('error', 'Token inválido o expirado');
+        return $this->redirectToRoute('app_register');
+    }
+    
+    $user->setIsVerified(true);
+    $user->setVerificationToken(null);
+    $user->setVerificationTokenExpiresAt(null);
+    $em->flush();
+    
+    $this->addFlash('success', 'Email confirmado exitosamente');
+    return $this->redirectToRoute('app_login');
+}

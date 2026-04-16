@@ -1,0 +1,22 @@
+<div class="verificar-container">
+  <div class="verificar-card">
+    <div class="logo">
+      <div class="logo-icon">✉️</div>
+      <h2>App<span>Rest</span></h2>
+    </div>
+
+    <div *ngIf="cargando" class="loading">
+      <div class="spinner"></div>
+      <p>Verificando tu correo...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<app-modal
+  [visible]="modalVisible"
+  [titulo]="modalTitulo"
+  [mensaje]="modalMensaje"
+  [tipo]="modalTipo"
+  (confirmado)="onModalConfirmado()"
+></app-modal>
