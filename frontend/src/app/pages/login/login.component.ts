@@ -1,9 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { ModalComponent } from '../modal/modal.component';
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Router, RouterModule } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { AuthService } from "../../services/auth.service";
+import { ModalComponent } from "../modal/modal.component";
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ import { ModalComponent } from '../modal/modal.component';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent {
   credenciales = {
     correo: '',
     password: ''
@@ -20,7 +20,6 @@ export class LoginComponent implements OnDestroy {
   cargando = false;
   recordar = false;
 
-  // Bloqueo
   bloqueado = false;
   tiempoRestante = 0;
   intervalo: any = null;
@@ -64,7 +63,7 @@ export class LoginComponent implements OnDestroy {
   iniciarContador(segundos: number) {
     this.bloqueado = true;
     this.tiempoRestante = segundos;
-    
+
     this.intervalo = setInterval(() => {
       this.tiempoRestante--;
       if (this.tiempoRestante <= 0) {
@@ -103,19 +102,25 @@ export class LoginComponent implements OnDestroy {
       },
       error: (err: any) => {
         this.cargando = false;
-        const mensaje = err.error?.message || 'Error al iniciar sesión';
+        console.log('ERROR COMPLETO:', err);
+        console.log('RESPUESTA:', err.error);
+        
+        let mensaje = 'Error al iniciar sesión';
+        
+        if (err.error && err.error.message) {
+          mensaje = err.error.message;
+          console.log('MENSAJE DEL BACKEND:', mensaje);
+        }
         
         // Verificar si es un mensaje de bloqueo
         if (mensaje.includes('bloqueada') || mensaje.includes('segundos')) {
-          // Extraer los segundos del mensaje (ej: "Cuenta bloqueada. Intenta de nuevo en 30 segundos.")
           const match = mensaje.match(/(\d+)\s*segundos?/);
           if (match) {
             this.iniciarContador(parseInt(match[1]));
           }
-          this.mostrarModal('Cuenta bloqueada', mensaje, 'warning');
-        } else {
-          this.mostrarModal('Error', mensaje, 'error');
         }
+        
+        this.mostrarModal('Error de inicio de sesión', mensaje, 'error');
       }
     });
   }

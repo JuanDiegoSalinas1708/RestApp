@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         driver: pdo_sqlsrv
-        host: "np:\\\\.\\pipe\\LOCALDB#A970353E\\tsql\\query"
+        host: "np:\\\\.\\pipe\\LOCALDB#F0C08519\\tsql\\query"
         dbname: RestDB
         user: ""
         password: ""
