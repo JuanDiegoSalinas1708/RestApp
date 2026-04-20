@@ -18,13 +18,16 @@ export class RegistroComponent {
     apellido: '',
     correo: '',
     password: '',
-    fechaNacimiento: ''
+    edad: 0
   };
-  fechaMaxima: string = new Date().toISOString().split('T')[0];
-
   cargando = false;
 
-  // Requisitos de contraseña
+  // Fecha de nacimiento y edad
+  fechaNacimiento = '';
+  edad: number | null = null;
+  fechaMaxima: string = '';
+
+  // Validaciones de contraseña
   passwordRequerimientos = {
     minLength: false,
     mayuscula: false,
@@ -48,7 +51,12 @@ export class RegistroComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+    // Calcular fecha máxima (18 años atrás desde hoy)
+    const hoy = new Date();
+    const fechaMax = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate());
+    this.fechaMaxima = fechaMax.toISOString().split('T')[0];
+  }
 
   mostrarModal(titulo: string, mensaje: string, tipo: 'success' | 'error' | 'warning' | 'info' = 'info', onConfirm?: () => void) {
     this.modalTitulo = titulo;
@@ -69,15 +77,32 @@ export class RegistroComponent {
     this.cerrarModal();
   }
 
+  calcularEdad() {
+    if (this.fechaNacimiento) {
+      const hoy = new Date();
+      const nacimiento = new Date(this.fechaNacimiento);
+      let edad = hoy.getFullYear() - nacimiento.getFullYear();
+      const mes = hoy.getMonth() - nacimiento.getMonth();
+      if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+      }
+      this.edad = edad;
+      
+      if (edad < 18) {
+        this.mostrarModal('Edad no permitida', 'Debes ser mayor de 18 años para registrarte.', 'warning');
+        this.fechaNacimiento = '';
+        this.edad = null;
+      }
+    }
+  }
+
   validarPassword(password: string) {
-    // Actualizar requisitos
     this.passwordRequerimientos.minLength = password.length >= 8;
     this.passwordRequerimientos.mayuscula = /[A-Z]/.test(password);
     this.passwordRequerimientos.minuscula = /[a-z]/.test(password);
     this.passwordRequerimientos.numero = /[0-9]/.test(password);
     this.passwordRequerimientos.especial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-    // Calcular fortaleza (0-100)
     const requisitos = [
       this.passwordRequerimientos.minLength,
       this.passwordRequerimientos.mayuscula,
@@ -89,7 +114,6 @@ export class RegistroComponent {
     const cumplidos = requisitos.filter(r => r === true).length;
     this.fortalezaPassword = (cumplidos / 5) * 100;
 
-    // Texto y color según fortaleza
     if (password.length === 0) {
       this.textoFortaleza = '';
       this.claseFortaleza = '';
@@ -121,21 +145,14 @@ export class RegistroComponent {
 
   onSubmit() {
     // Validar campos obligatorios
-    if (!this.nuevoUsuario.nombre || !this.nuevoUsuario.apellido || !this.nuevoUsuario.correo || !this.nuevoUsuario.password || !this.nuevoUsuario.fechaNacimiento) {
+    if (!this.nuevoUsuario.nombre || !this.nuevoUsuario.apellido || !this.nuevoUsuario.correo || !this.nuevoUsuario.password || !this.fechaNacimiento) {
       this.mostrarModal('Campos incompletos', 'Por favor complete todos los campos.', 'warning');
       return;
     }
 
     // Validar edad
-    const hoy = new Date();
-    const nacimiento = new Date(this.nuevoUsuario.fechaNacimiento);
-    let edad = hoy.getFullYear() - nacimiento.getFullYear();
-    const mes = hoy.getMonth() - nacimiento.getMonth();
-    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-      edad--;
-    }
-    if (edad < 18) {
-      this.mostrarModal('Edad no permitida', 'Debes tener al menos 18 años para registrarte.', 'warning');
+    if (!this.edad || this.edad < 18) {
+      this.mostrarModal('Edad no permitida', 'Debes ser mayor de 18 años para registrarte.', 'warning');
       return;
     }
 
@@ -145,13 +162,11 @@ export class RegistroComponent {
       return;
     }
 
-    this.cargando = true;
-    const payload = {
-      ...this.nuevoUsuario,
-      fechadenacimiento: this.nuevoUsuario.fechaNacimiento
-    };
+    // Asignar edad al usuario
+    this.nuevoUsuario.edad = this.edad;
 
-    this.authService.registro(payload).subscribe({
+    this.cargando = true;
+    this.authService.registro(this.nuevoUsuario).subscribe({
       next: (res: any) => {
         this.cargando = false;
         if (res.status === 'ok') {

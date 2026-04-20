@@ -1,4 +1,4 @@
- import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
@@ -17,6 +17,9 @@ export class ProductosComponent implements OnInit {
   usuario: any = null;
   nuevoProducto: any = { nombre: '', precio: '', descripcion: '' };
   editandoProducto: any = null;
+
+  modalEdicionVisible=false;
+  productoEditando:any=null;
 
   // Modal
   modalVisible = false;
@@ -63,6 +66,39 @@ export class ProductosComponent implements OnInit {
 
   onModalCancelado() {
     this.cerrarModal();
+  }
+
+  abrirModalEdicion(producto:any){
+    this.productoEditando = {...producto};
+    this.modalEdicionVisible = true;
+  }
+
+  cerrarModalEdicion(){
+    this.modalEdicionVisible=false;
+    this.productoEditando=null;
+  }
+
+  guardarEdicionModal(){
+    if(!this.productoEditando.nombre|| !this.productoEditando.precio || !this.productoEditando.descripcion){
+      this.mostrarModal('Campos incompletos', 'Todos los campos son obligatorios', 'warning');
+      return;
+    }
+    this.productosService.editarProducto(this.productoEditando.id, this.productoEditando).subscribe({
+      next: (res) => {
+        if(res.status === 'ok'){
+          this.mostrarModal('Éxito','Producto actualizado correctamente','success',()=>{
+            this.cargarProductos();
+            this.cerrarModalEdicion();
+          },false);
+        } else {
+          this.mostrarModal('Error', res.message, 'error');
+        }
+      },
+      error: () =>{
+        this.mostrarModal('Error', 'Error al editar producto', 'error');
+      }
+    });
+
   }
 
   cargarProductos() {

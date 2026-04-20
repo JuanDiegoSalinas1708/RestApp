@@ -5,28 +5,25 @@ import { CommonModule } from '@angular/common';
   selector: 'app-modal',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="modal-overlay" *ngIf="visible" (click)="cerrar()">
-      <div class="modal-container" (click)="$event.stopPropagation()">
-        <div class="modal-header" [class]="tipo">
-          <span class="modal-icon">{{ icono }}</span>
-          <h3>{{ titulo }}</h3>
-          <button class="modal-close" (click)="cerrar()">✕</button>
-        </div>
-        <div class="modal-body">
-          <p>{{ mensaje }}</p>
-        </div>
-        <div class="modal-footer">
-          <button *ngIf="mostrarCancelar" class="btn-cancelar" (click)="cancelar()">
-            {{ textoCancelar }}
-          </button>
-          <button class="btn-confirmar" [class]="tipo" (click)="confirmar()">
-            {{ textoConfirmar }}
-          </button>
-        </div>
+ template: `
+  <div class="modal-overlay" *ngIf="visible" (click)="cerrar()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header" [class]="tipo">
+        <span class="modal-icon">{{ icono }}</span>
+        <h3>{{ titulo }}</h3>
+        <button class="modal-close" (click)="cerrar()">✕</button>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <p *ngIf="!mensajePersonalizado">{{ mensaje }}</p>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="mostrarCancelar" class="btn-cancelar" (click)="cancelar()">{{ textoCancelar }}</button>
+        <button class="btn-confirmar" [class]="tipo" (click)="confirmar()">{{ textoConfirmar }}</button>
       </div>
     </div>
-  `,
+  </div>
+`,
   styles: [`
     .modal-overlay {
       position: fixed;
@@ -143,6 +140,10 @@ export class ModalComponent {
       info: 'ℹ️'
     };
     return iconos[this.tipo];
+  }
+
+  get mensajePersonalizado():boolean{
+    return !this.mensaje || this.mensaje.length === 0;
   }
 
   cerrar() {

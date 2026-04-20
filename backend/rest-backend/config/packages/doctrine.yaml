@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         driver: pdo_sqlsrv
-        host: "np:\\\\.\\pipe\\LOCALDB#3B9AA106\\tsql\\query"
+        host: "np:\\\\.\\pipe\\LOCALDB#A970353E\\tsql\\query"
         dbname: RestDB
         user: ""
         password: ""
@@ -11,7 +11,7 @@ doctrine:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         identity_generation_preferences:
-            Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
+            Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity 
         auto_mapping: true
         mappings:
             App:

@@ -1,10 +1,10 @@
 <div class="productos-container">
   <div class="contenido">
-    <h2>Productos Disponibles</h2>
+    <h2>📦 Productos Disponibles</h2>
 
     <!-- Formulario para crear producto -->
     <div class="form-container">
-      <h3>Agregar Nuevo Producto</h3>
+      <h3>➕ Agregar Nuevo Producto</h3>
       <form (ngSubmit)="crearProducto()">
         <div class="campo">
           <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" placeholder="Nombre" required>
@@ -16,26 +16,6 @@
           <input type="text" [(ngModel)]="nuevoProducto.descripcion" name="descripcion" placeholder="Descripción" required>
         </div>
         <button type="submit" class="btn-agregar">Agregar Producto</button>
-      </form>
-    </div>
-
-    <!-- Formulario para editar producto -->
-    <div *ngIf="editandoProducto" class="form-container form-editar">
-      <h3>Editar Producto</h3>
-      <form (ngSubmit)="guardarEdicion()">
-        <div class="campo">
-          <input type="text" [(ngModel)]="editandoProducto.nombre" name="nombre" placeholder="Nombre" required>
-        </div>
-        <div class="campo">
-          <input type="number" [(ngModel)]="editandoProducto.precio" name="precio" placeholder="Precio" step="0.01" required>
-        </div>
-        <div class="campo">
-          <input type="text" [(ngModel)]="editandoProducto.descripcion" name="descripcion" placeholder="Descripción" required>
-        </div>
-        <div class="botones-accion">
-          <button type="submit" class="btn-guardar">Guardar Cambios</button>
-          <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
-        </div>
       </form>
     </div>
 
@@ -58,7 +38,7 @@
             <td>${{ p.precio }}</td>
             <td>{{ p.descripcion }}</td>
             <td class="acciones">
-              <button class="btn-editar" (click)="editarProducto(p)">✏️ Editar</button>
+              <button class="btn-editar" (click)="abrirModalEdicion(p)">✏️ Editar</button>
               <button class="btn-eliminar" (click)="confirmarEliminar(p.id)">🗑️ Eliminar</button>
             </td>
           </tr>
@@ -66,7 +46,36 @@
       </table>
     </div>
   </div>
-  <!-- Modal -->
+</div>
+
+<!-- Modal de edición -->
+<app-modal
+  *ngIf="modalEdicionVisible"
+  [visible]="modalEdicionVisible"
+  titulo="Editar Producto"
+  tipo="info"
+  [mostrarCancelar]="true"
+  textoConfirmar="Guardar Cambios"
+  textoCancelar="Cancelar"
+  (confirmado)="guardarEdicionModal()"
+  (cancelado)="cerrarModalEdicion()"
+>
+  <div class="modal-form">
+    <div class="campo">
+      <label>Nombre</label>
+      <input type="text" [(ngModel)]="productoEditando.nombre" placeholder="Nombre del producto">
+    </div>
+    <div class="campo">
+      <label>Precio</label>
+      <input type="number" [(ngModel)]="productoEditando.precio" step="0.01" placeholder="Precio">
+    </div>
+    <div class="campo">
+      <label>Descripción</label>
+      <input type="text" [(ngModel)]="productoEditando.descripcion" placeholder="Descripción">
+    </div>
+  </div>
+</app-modal>
+<!-- Modal genérico -->
 <app-modal
   [visible]="modalVisible"
   [titulo]="modalTitulo"
@@ -76,4 +85,3 @@
   (confirmado)="onModalConfirmado()"
   (cancelado)="onModalCancelado()"
 ></app-modal>
-</div>

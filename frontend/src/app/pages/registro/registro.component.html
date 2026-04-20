@@ -15,14 +15,14 @@
         <form (ngSubmit)="onSubmit()" class="registro-form">
           <div class="form-row">
             <div class="input-group">
-              <label>Nombre<span class ="required">*</span></label>
+              <label>Nombre<span class="required">*</span></label>
               <input type="text" [(ngModel)]="nuevoUsuario.nombre" name="nombre" placeholder="Tu nombre" required>
             </div>
           </div>
 
           <div class="form-row" style="flex-wrap: nowrap;">
             <div class="input-group" style="flex: 1; min-width: 0;">
-              <label>Apellido<span class ="required">*</span></label>
+              <label>Apellido<span class="required">*</span></label>
               <input type="text" [(ngModel)]="nuevoUsuario.apellido" name="apellido" placeholder="Tu apellido" required>
             </div>
             <div class="input-group" style="flex: 1; min-width: 0;">
@@ -31,10 +31,18 @@
                 <i class="bi bi-calendar3"></i>
                 <input
                   type="date"
-                  [(ngModel)]="nuevoUsuario.fechaNacimiento"
+                  [(ngModel)]="fechaNacimiento"
                   name="fechaNacimiento"
                   [max]="fechaMaxima"
+                  (change)="calcularEdad()"
                   required>
+              </div>
+            </div>
+            <div class="input-group" *ngIf="edad">
+              <label>Edad</label>
+              <div class="input-icon">
+                <span class="icon">📅</span>
+                <input type="text" [value]="edad + ' años'" disabled>
               </div>
             </div>
           </div>
@@ -86,7 +94,6 @@
         <div class="separator">
           <span>O</span>
         </div>
-
 
         <p class="register-link">
           ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a>
